@@ -826,7 +826,319 @@ public class RunRecord
 
 ---
 
-## 7. 데이터 검증 체크리스트
+---
+
+## 7. 빌드/시너지 시스템 데이터 (신규)
+
+### 7.1 Build Enums
+
+```csharp
+// Assets/02.Scripts/Build/SynergyType.cs
+public enum SynergyType
+{
+    FireMaster,         // 화염 마스터
+    PoisonExpert,       // 맹독 전문가
+    Unyielding,         // 불굴의 전사
+    CriticalStrike,     // 치명적 일격
+    SwiftBlade,         // 신속의 칼날
+    VampireBless        // 흡혈귀의 축복
+}
+
+// Assets/02.Scripts/Build/SynergyTier.cs
+public enum SynergyTier
+{
+    Basic,      // Tier 1: 스킬 1 + 스탯 1
+    Advanced,   // Tier 2: 스킬 2 + 스탯 2
+    Legendary   // Tier 3: 스킬 3 + 스탯 3
+}
+
+// Assets/02.Scripts/Build/SynergyEffectType.cs
+public enum SynergyEffectType
+{
+    DotDamageBonus,         // DoT 데미지 증가
+    PoisonStackBonus,       // 독 중첩 한도 증가
+    DamageReduction,        // 받는 피해 감소
+    CritExtraHit,           // 크리티컬 추가 타격
+    CooldownReduction,      // 스킬 쿨다운 감소
+    LifestealBonus          // 흡혈량 증가
+}
+```
+
+### 7.2 SynergyData ScriptableObject
+
+```csharp
+// Assets/02.Scripts/Build/SynergyData.cs
+[CreateAssetMenu(fileName = "SY_NewSynergy", menuName = "DungeonRush/Synergy Data")]
+public class SynergyData : ScriptableObject
+{
+    [Header("기본 정보")]
+    [Tooltip("고유 식별자")]
+    public string synergyId;
+
+    [Tooltip("시너지 이름")]
+    public string synergyName;
+
+    [TextArea(2, 4)]
+    [Tooltip("시너지 설명")]
+    public string description;
+
+    [Tooltip("시너지 타입")]
+    public SynergyType synergyType;
+
+    [Tooltip("시너지 티어")]
+    public SynergyTier tier;
+
+    [Tooltip("시너지 아이콘")]
+    public Sprite icon;
+
+    [Header("스킬 조건")]
+    [Tooltip("필요한 스킬 타입들")]
+    public SkillRequirement[] requiredSkills;
+
+    [Header("스탯 조건")]
+    [Tooltip("필요한 스탯 조건들")]
+    public StatRequirement[] requiredStats;
+
+    [Header("효과")]
+    [Tooltip("시너지 효과 타입")]
+    public SynergyEffectType effectType;
+
+    [Tooltip("효과 수치 (비율: 0.5 = 50%)")]
+    public float effectValue;
+
+    [Tooltip("추가 효과 설명")]
+    public string effectDescription;
+
+    [Header("UI")]
+    [Tooltip("활성화 이펙트")]
+    public GameObject activateEffect;
+
+    [Tooltip("활성화 사운드")]
+    public AudioClip activateSound;
+
+    // 조건 충족 여부 체크
+    public bool CheckConditions(PlayerBuildState buildState)
+    {
+        // 스킬 조건 체크
+        foreach (var req in requiredSkills)
+        {
+            if (!buildState.HasSkillOfType(req.skillType, req.minLevel))
+            {
+                return false;
+            }
+        }
+
+        // 스탯 조건 체크
+        foreach (var req in requiredStats)
+        {
+            if (!buildState.MeetsStatThreshold(req.statType, req.thresholdRatio))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+}
+
+[System.Serializable]
+public class SkillRequirement
+{
+    [Tooltip("필요 스킬 타입 (버프 타입 또는 스킬 타입)")]
+    public BuffType skillType;
+
+    [Tooltip("최소 스킬 레벨")]
+    [Range(1, 5)]
+    public int minLevel = 1;
+}
+
+[System.Serializable]
+public class StatRequirement
+{
+    [Tooltip("필요 스탯 타입")]
+    public StatType statType;
+
+    [Tooltip("초기값 대비 필요 비율 (1.5 = 150%)")]
+    [Range(1f, 3f)]
+    public float thresholdRatio = 1.5f;
+}
+```
+
+### 7.3 DifficultyConfig ScriptableObject
+
+```csharp
+// Assets/02.Scripts/Stage/DifficultyConfig.cs
+[CreateAssetMenu(fileName = "DifficultyConfig", menuName = "DungeonRush/Config/Difficulty Config")]
+public class DifficultyConfig : ScriptableObject
+{
+    [Header("챕터별 난이도 설정")]
+    public ChapterDifficulty[] chapterDifficulties;
+
+    // 챕터에 맞는 난이도 설정 반환
+    public ChapterDifficulty GetDifficulty(int chapter)
+    {
+        foreach (var diff in chapterDifficulties)
+        {
+            if (chapter >= diff.chapterRangeMin && chapter <= diff.chapterRangeMax)
+            {
+                return diff;
+            }
+        }
+
+        // 기본값: 마지막 설정 반환
+        return chapterDifficulties[^1];
+    }
+}
+
+[System.Serializable]
+public class ChapterDifficulty
+{
+    [Header("챕터 범위")]
+    public int chapterRangeMin;
+    public int chapterRangeMax;
+
+    [Header("적 스케일링")]
+    [Tooltip("적 스탯 배율")]
+    [Range(1f, 10f)]
+    public float enemyStatMultiplier = 1f;
+
+    [Header("DPS 체크")]
+    [Tooltip("DPS 체크 활성화")]
+    public bool hasDpsCheck;
+
+    [Tooltip("DPS 체크 시간 (초)")]
+    public float dpsCheckTime = 60f;
+
+    [Header("생존 체크")]
+    [Tooltip("생존 체크 활성화")]
+    public bool hasSurvivalCheck;
+
+    [Tooltip("최소 HP 비율")]
+    [Range(1f, 3f)]
+    public float minHpRatio = 1f;
+
+    [Tooltip("최소 DEF 비율")]
+    [Range(1f, 3f)]
+    public float minDefRatio = 1f;
+
+    [Header("빌드 요구사항")]
+    [Tooltip("빌드 체크 활성화")]
+    public bool hasBuildRequirement;
+
+    [Tooltip("최소 스킬 개수")]
+    public int minSkillCount = 0;
+
+    [Tooltip("최소 시너지 개수")]
+    public int minSynergyCount = 0;
+}
+```
+
+### 7.4 런타임 데이터 클래스
+
+```csharp
+// Assets/02.Scripts/Build/PlayerBuildState.cs
+[System.Serializable]
+public class PlayerBuildState
+{
+    // 선택한 카드들
+    public List<CardData> selectedCards = new List<CardData>();
+
+    // 보유 스킬들
+    public List<SkillBase> equippedSkills = new List<SkillBase>();
+
+    // 활성화된 시너지들
+    public List<SynergyType> activeSynergies = new List<SynergyType>();
+
+    // 카드 추가
+    public void AddCard(CardData card)
+    {
+        selectedCards.Add(card);
+    }
+
+    // 스킬 타입 보유 확인
+    public bool HasSkillOfType(BuffType buffType, int minLevel)
+    {
+        foreach (var skill in equippedSkills)
+        {
+            if (skill.Data.buffType == buffType && skill.Level >= minLevel)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // 스탯 임계치 충족 확인
+    public bool MeetsStatThreshold(StatType statType, float thresholdRatio)
+    {
+        // CharacterStats와 연동하여 확인
+        // 실제 구현 시 PlayerController에서 참조
+        return false; // placeholder
+    }
+
+    // 상태 초기화 (새 런 시작 시)
+    public void Reset()
+    {
+        selectedCards.Clear();
+        equippedSkills.Clear();
+        activeSynergies.Clear();
+    }
+}
+
+// Assets/02.Scripts/Build/ActiveSynergy.cs
+[System.Serializable]
+public class ActiveSynergy
+{
+    public SynergyData data;
+    public bool isActive;
+    public float activatedTime;
+
+    public ActiveSynergy(SynergyData synergyData)
+    {
+        data = synergyData;
+        isActive = false;
+        activatedTime = 0f;
+    }
+
+    public void Activate()
+    {
+        isActive = true;
+        activatedTime = Time.time;
+    }
+
+    public void Deactivate()
+    {
+        isActive = false;
+    }
+}
+```
+
+### 7.5 ScriptableObject 폴더 구조 (추가)
+
+```
+Assets/10.ScriptableObjects/
+├── ...
+├── Synergies/                    # 신규
+│   ├── Tier1/
+│   │   ├── SY_FireMaster.asset
+│   │   ├── SY_PoisonExpert.asset
+│   │   └── SY_CriticalStrike.asset
+│   ├── Tier2/
+│   │   ├── SY_Unyielding.asset
+│   │   └── SY_SwiftBlade.asset
+│   └── Tier3/
+│       └── SY_VampireBless.asset
+│
+└── Config/
+    ├── GameConfig.asset
+    ├── BalanceConfig.asset
+    ├── SpawnConfig.asset
+    └── DifficultyConfig.asset    # 신규
+```
+
+---
+
+## 8. 데이터 검증 체크리스트
 
 - [ ] 모든 ScriptableObject에 고유 ID 부여
 - [ ] 스킬 쿨다운 0 이상 검증
@@ -834,3 +1146,5 @@ public class RunRecord
 - [ ] 카드 희귀도 확률 합계 100%
 - [ ] 스테이지 데이터 순차적 챕터 번호
 - [ ] 보스 데이터 필수 필드 검증
+- [ ] 시너지 조건 논리적 검증 (달성 가능 여부)
+- [ ] 챕터별 난이도 설정 연속성 검증

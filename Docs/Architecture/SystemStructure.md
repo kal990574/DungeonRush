@@ -865,7 +865,280 @@ void UpdateHPBar(float current, float max)
 
 ---
 
-## 8. 체크리스트
+---
+
+## 8. 시너지 시스템 구조 (신규)
+
+> **핵심 컨셉**: 특정 스킬 + 스탯 조합이 시너지 효과 발생. 플레이어는 자유롭게 빌드를 선택하고 그 결과를 경험.
+
+### 8.1 Synergy System 구조
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                      SYNERGY SYSTEM                               │
+│                                                                  │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │                    SynergyManager                           │ │
+│  │  ┌─────────────────────────────────────────────────────┐   │ │
+│  │  │ - _allSynergies: SynergyData[]                       │   │ │
+│  │  │ - _activeSynergies: List<ActiveSynergy>              │   │ │
+│  │  │ ─────────────────────────────────────────────────    │   │ │
+│  │  │ + CheckAllSynergies(buildState): void                │   │ │
+│  │  │ + GetActiveSynergies(): List<SynergyData>            │   │ │
+│  │  │ + ApplySynergyEffects(stats): void                   │   │ │
+│  │  │ + RemoveSynergyEffects(stats): void                  │   │ │
+│  │  └─────────────────────────────────────────────────────┘   │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                              │                                   │
+│                              │ raises events                     │
+│                              ▼                                   │
+│  ┌────────────────────────────────────────────────────────────┐ │
+│  │                    GameEventBus                             │ │
+│  │  ┌─────────────────────────────────────────────────────┐   │ │
+│  │  │ + OnSynergyActivated(SynergyData)                    │   │ │
+│  │  │ + OnSynergyDeactivated(SynergyData)                  │   │ │
+│  │  └─────────────────────────────────────────────────────┘   │ │
+│  └────────────────────────────────────────────────────────────┘ │
+│                                                                  │
+└──────────────────────────────────────────────────────────────────┘
+```
+
+### 8.2 SynergyManager 구현 명세
+
+```csharp
+public class SynergyManager : MonoBehaviour
+{
+    [Header("Synergy Data")]
+    [SerializeField] private SynergyData[] _allSynergies;
+
+    private List<ActiveSynergy> _trackedSynergies = new List<ActiveSynergy>();
+    private CharacterStats _playerStats;
+
+    private void Start()
+    {
+        // 모든 시너지 추적 목록에 추가
+        foreach (var data in _allSynergies)
+        {
+            _trackedSynergies.Add(new ActiveSynergy(data));
+        }
+    }
+
+    public void CheckAllSynergies(PlayerBuildState buildState)
+    {
+        foreach (var synergy in _trackedSynergies)
+        {
+            bool meetsCondition = synergy.data.CheckConditions(buildState);
+
+            if (meetsCondition && !synergy.isActive)
+            {
+                ActivateSynergy(synergy, buildState);
+            }
+            else if (!meetsCondition && synergy.isActive)
+            {
+                DeactivateSynergy(synergy, buildState);
+            }
+        }
+    }
+
+    private void ActivateSynergy(ActiveSynergy synergy, PlayerBuildState buildState)
+    {
+        synergy.Activate();
+        buildState.activeSynergies.Add(synergy.data.synergyType);
+
+        // 효과 적용
+        ApplySynergyEffect(synergy.data);
+
+        // 이벤트 발행
+        GameEventBus.RaiseSynergyActivated(synergy.data);
+
+        // 이펙트/사운드
+        if (synergy.data.activateEffect != null)
+        {
+            // 이펙트 재생
+        }
+        if (synergy.data.activateSound != null)
+        {
+            // 사운드 재생
+        }
+    }
+
+    private void DeactivateSynergy(ActiveSynergy synergy, PlayerBuildState buildState)
+    {
+        synergy.Deactivate();
+        buildState.activeSynergies.Remove(synergy.data.synergyType);
+
+        // 효과 제거
+        RemoveSynergyEffect(synergy.data);
+
+        // 이벤트 발행
+        GameEventBus.RaiseSynergyDeactivated(synergy.data);
+    }
+
+    private void ApplySynergyEffect(SynergyData data)
+    {
+        switch (data.effectType)
+        {
+            case SynergyEffectType.DotDamageBonus:
+                // DoT 데미지 증가 적용
+                break;
+            case SynergyEffectType.PoisonStackBonus:
+                // 독 중첩 한도 증가
+                break;
+            case SynergyEffectType.DamageReduction:
+                // 받는 피해 감소 적용
+                break;
+            case SynergyEffectType.CritExtraHit:
+                // 크리티컬 추가 타격 활성화
+                break;
+            case SynergyEffectType.CooldownReduction:
+                // 스킬 쿨다운 감소
+                break;
+            case SynergyEffectType.LifestealBonus:
+                // 흡혈량 증가
+                break;
+        }
+    }
+
+    private void RemoveSynergyEffect(SynergyData data)
+    {
+        // ApplySynergyEffect의 역연산
+    }
+
+    public List<SynergyData> GetActiveSynergies()
+    {
+        return _trackedSynergies
+            .Where(s => s.isActive)
+            .Select(s => s.data)
+            .ToList();
+    }
+
+    public List<SynergyData> GetAvailableSynergies(PlayerBuildState buildState)
+    {
+        return _trackedSynergies
+            .Where(s => !s.isActive && s.data.CheckConditions(buildState))
+            .Select(s => s.data)
+            .ToList();
+    }
+}
+```
+
+### 8.3 DifficultyScaler 구현 명세
+
+```csharp
+public class DifficultyScaler : MonoBehaviour
+{
+    [Header("Config")]
+    [SerializeField] private DifficultyConfig _config;
+
+    private PlayerBuildState _buildState;
+    private ChapterDifficulty _currentDifficulty;
+
+    private float _dpsCheckTimer;
+    private bool _isDpsCheckActive;
+
+    public void SetChapter(int chapter)
+    {
+        _currentDifficulty = _config.GetDifficulty(chapter);
+        ResetDpsCheck();
+    }
+
+    // 적 스탯 스케일링
+    public float GetEnemyStatMultiplier()
+    {
+        return _currentDifficulty?.enemyStatMultiplier ?? 1f;
+    }
+
+    // DPS 체크 시작
+    public void StartDpsCheck()
+    {
+        if (_currentDifficulty != null && _currentDifficulty.hasDpsCheck)
+        {
+            _isDpsCheckActive = true;
+            _dpsCheckTimer = _currentDifficulty.dpsCheckTime;
+        }
+    }
+
+    private void Update()
+    {
+        if (_isDpsCheckActive)
+        {
+            _dpsCheckTimer -= Time.deltaTime;
+
+            if (_dpsCheckTimer <= 0)
+            {
+                // DPS 체크 실패
+                GameEventBus.RaiseDpsCheckFailed();
+                _isDpsCheckActive = false;
+            }
+        }
+    }
+
+    public void OnBossDefeated()
+    {
+        _isDpsCheckActive = false;
+    }
+
+    // 빌드 요구사항 충족 검증
+    public bool ValidateBuildRequirements()
+    {
+        if (_currentDifficulty == null || !_currentDifficulty.hasBuildRequirement)
+        {
+            return true;
+        }
+
+        bool hasEnoughSkills = _buildState.equippedSkills.Count >= _currentDifficulty.minSkillCount;
+        bool hasEnoughSynergies = _buildState.activeSynergies.Count >= _currentDifficulty.minSynergyCount;
+
+        return hasEnoughSkills && hasEnoughSynergies;
+    }
+
+    // 생존 체크
+    public bool ValidateSurvivalRequirements(CharacterStats playerStats, GameConfig gameConfig)
+    {
+        if (_currentDifficulty == null || !_currentDifficulty.hasSurvivalCheck)
+        {
+            return true;
+        }
+
+        float currentHpRatio = playerStats.maxHP / gameConfig.initialHP;
+        float currentDefRatio = playerStats.def / gameConfig.initialDEF;
+
+        return currentHpRatio >= _currentDifficulty.minHpRatio &&
+               currentDefRatio >= _currentDifficulty.minDefRatio;
+    }
+
+    private void ResetDpsCheck()
+    {
+        _isDpsCheckActive = false;
+        _dpsCheckTimer = 0f;
+    }
+}
+```
+
+### 8.4 시너지 시스템 데이터 흐름
+
+```
+카드 선택 ──▶ PlayerBuildState 업데이트
+                      │
+                      └── SynergyManager.CheckAllSynergies()
+                                │
+                                ├── 조건 충족 시너지 활성화
+                                │         │
+                                │         ▼
+                                │   GameEventBus.OnSynergyActivated
+                                │         │
+                                │         ▼
+                                │   SynergyDisplayUI 업데이트
+                                │
+                                └── 시너지 효과 적용
+                                          │
+                                          ▼
+                                    CharacterStats 수정
+```
+
+---
+
+## 9. 체크리스트
 
 ### 아키텍처 검증
 - [x] SOLID 원칙 준수
@@ -880,3 +1153,9 @@ void UpdateHPBar(float current, float max)
 - [x] 컴포넌트 캐싱
 - [x] 이벤트 기반 업데이트
 - [x] GC 최소화 구조
+
+### 시너지 시스템 검증
+- [x] SynergyManager 단일 책임 (시너지 조건 체크/적용만 담당)
+- [x] SynergyManager 확장 가능 (새 시너지 추가 용이)
+- [x] 이벤트 기반 UI 업데이트
+- [x] DifficultyScaler 챕터별 설정 분리
