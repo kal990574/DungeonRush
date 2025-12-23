@@ -16,6 +16,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 * **리뷰 언어:** 모든 코드 리뷰 요약 및 코멘트를 **한국어(Korean)**로 작성합니다. 명확하고 자연스러운 한글 설명을 사용합니다.
 * **디자인 원칙 검토:** 모든 PR에 대해 **SOLID 원칙**과 **디미터의 법칙(Law of Demeter)** 위반 여부를 중점적으로 확인합니다.
 * **함수:** 함수는 한 가지 일만 합니다.
+* **가이드 기반 코딩:** 사용자가 직접 코드를 작성하는 방식을 선호합니다. 코드 템플릿 제공 시 다음 형식을 따릅니다:
+  1. **파일 경로**: 생성할 파일의 전체 경로
+  2. **코드 템플릿**: 작성할 전체 코드
+  3. **코드 설명**: 주요 요소별 설명 (표 형식)
+  4. **활용처**: 이 코드가 프로젝트에서 어디에, 어떻게 사용되는지 구체적으로 명시
 
 ### 0.1. 핵심 디자인 원칙 (SOLID & LoD)
 
@@ -42,6 +47,54 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 중복 제거, 네이밍 개선, 불필요한 복잡성 제거
 - 미사용 변수, 죽은 코드(dead code) 정리
 - 테스트 가능성, 확장 가능성 향상
+
+### 0.3. 인터페이스 우선 설계 (Interface-First Design)
+
+#### 핵심 원칙
+- **구현보다 추상화 우선**: 클래스 작성 전 인터페이스부터 정의
+- **구체 타입 의존 금지**: 필드/매개변수는 인터페이스 타입 사용
+- **작은 인터페이스**: ISP 원칙에 따라 단일 책임의 작은 인터페이스 선호
+
+#### 인터페이스 설계 규칙
+
+| 규칙 | 설명 | 예시 |
+|------|------|------|
+| **I 접두사** | 모든 인터페이스는 `I`로 시작 | `IDamageable`, `IAttacker` |
+| **행위 기반 명명** | 할 수 있는 것(-able) 또는 역할(-er) | `IPoolable`, `ITargetFinder` |
+| **메서드 최소화** | 인터페이스당 1~3개 메서드 권장 | 많으면 분리 |
+
+#### 의존성 주입 패턴
+
+```csharp
+// Good - 인터페이스에 의존
+public class AutoBattleController
+{
+    private readonly ITargetFinder _targetFinder;
+    private readonly IDamageCalculator _damageCalculator;
+
+    public AutoBattleController(ITargetFinder finder, IDamageCalculator calc)
+    {
+        _targetFinder = finder;
+        _damageCalculator = calc;
+    }
+}
+
+// Bad - 구체 클래스에 의존
+public class AutoBattleController
+{
+    private readonly BattleMediator _mediator;  // 구체 클래스 직접 참조
+}
+```
+
+#### 프로젝트 핵심 인터페이스
+
+| 인터페이스 | 용도 |
+|------------|------|
+| `IDamageable` | 데미지를 받을 수 있는 객체 |
+| `IAttacker` | 공격을 수행할 수 있는 객체 |
+| `IPoolable` | 오브젝트 풀링 대상 |
+| `ITargetable` | 타겟팅 가능한 객체 |
+| `ISkillExecutor` | 스킬 실행 가능한 객체 |
 
 ---
 
