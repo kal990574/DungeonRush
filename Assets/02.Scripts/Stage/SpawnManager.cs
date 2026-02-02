@@ -10,7 +10,8 @@ namespace _02.Scripts.Stage
     {
         [SerializeField] private EnemyPool _enemyPool;
         [SerializeField] private Transform _playerTransform;
-        [SerializeField] private float _spawnDistance = 8f;
+        [SerializeField] private float _spawnOffsetX = 12f;
+        [SerializeField] private float _spawnRangeY = 4f;
         [SerializeField] private float _despawnDelay = 0.5f;
 
         private void OnEnable()
@@ -26,19 +27,17 @@ namespace _02.Scripts.Stage
         public void SpawnEnemy(EnemyData data)
         {
             EnemyController enemy = _enemyPool.Get();
-            enemy.transform.position = GetRandomSpawnPosition();
+            enemy.transform.position = GetSpawnPosition();
             enemy.Setup(data, _playerTransform);
 
             GameEventBus.RaiseEnemySpawned(enemy);
         }
 
-        private Vector3 GetRandomSpawnPosition()
+        private Vector3 GetSpawnPosition()
         {
-            float angle = Random.Range(0f, Mathf.PI * 2f);
-            float x = Mathf.Cos(angle) * _spawnDistance;
-            float y = Mathf.Sin(angle) * _spawnDistance;
-
-            return _playerTransform.position + new Vector3(x, y, 0f);
+            float x = _playerTransform.position.x + _spawnOffsetX;
+            float y = Random.Range(-_spawnRangeY, _spawnRangeY);
+            return new Vector3(x, y, 0f);
         }
 
         private void HandleEnemyKilled(EnemyController enemy, int xp)
