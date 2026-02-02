@@ -4,30 +4,51 @@ namespace DungeonRush.UI.Popup
 {
     public class CardSelectModel : ViewModelBase
     {
+        private const int CardCount = 3;
+        private const int MaxRerollPerCard = 3;
+
         private CardData[] _cards;
-        private int _rerollCost;
-        private int _rerollsRemaining;
+        private readonly int[] _rerollCounts = new int[CardCount];
 
         public CardData[] Cards => _cards;
-        public int RerollCost => _rerollCost;
-        public int RerollsRemaining => _rerollsRemaining;
 
-        public bool CanReroll => _rerollsRemaining > 0;
+        public bool CanRerollCard(int index)
+        {
+            return _rerollCounts[index] < MaxRerollPerCard;
+        }
 
-        public string RerollText => CanReroll
-            ? $"Reroll ({_rerollCost}G) [{_rerollsRemaining}]"
-            : "No Rerolls";
+        public int GetRerollCount(int index)
+        {
+            return _rerollCounts[index];
+        }
+
+        public string GetRerollText(int index)
+        {
+            if (!CanRerollCard(index))
+            {
+                return "MAX";
+            }
+
+            int remaining = MaxRerollPerCard - _rerollCounts[index];
+            return $"({remaining})";
+        }
 
         public void SetCards(CardData[] cards)
         {
             _cards = cards;
+
+            for (int i = 0; i < CardCount; i++)
+            {
+                _rerollCounts[i] = 0;
+            }
+
             NotifyChanged();
         }
 
-        public void SetRerollInfo(int rerollsRemaining, int cost)
+        public void ReplaceCard(int index, CardData newCard)
         {
-            _rerollsRemaining = rerollsRemaining;
-            _rerollCost = cost;
+            _cards[index] = newCard;
+            _rerollCounts[index]++;
             NotifyChanged();
         }
     }

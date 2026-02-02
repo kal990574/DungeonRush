@@ -35,7 +35,7 @@ namespace DungeonRush.UI.HUD
                 View.SetIcon(Model.SkillData.icon);
             }
 
-            View.SetCooldownOverlay(Model.CooldownRatio);
+            View.SetCooldown(Model.CooldownRatio);
 
             if (!Model.IsOnCooldown)
             {

@@ -10,8 +10,9 @@ namespace DungeonRush.UI.HUD
         private const float ReadyPunchDuration = 0.2f;
 
         [Header("References")]
+        [SerializeField] private Image _borderLight;
+        [SerializeField] private Slider _cooldownSlider;
         [SerializeField] private Image _iconImage;
-        [SerializeField] private Image _cooldownOverlay;
         [SerializeField] private GameObject _lockOverlay;
         [SerializeField] private Button _button;
 
@@ -33,23 +34,25 @@ namespace DungeonRush.UI.HUD
             _iconImage.enabled = icon != null;
         }
 
-        public void SetCooldownOverlay(float ratio)
+        public void SetCooldown(float ratio)
         {
-            _cooldownOverlay.fillAmount = ratio;
+            _cooldownSlider.value = ratio;
             _button.interactable = ratio <= 0f;
         }
 
         public void ShowLockedState()
         {
             _lockOverlay.SetActive(true);
+            _borderLight.enabled = false;
             _button.interactable = false;
             _iconImage.enabled = false;
-            _cooldownOverlay.fillAmount = 0f;
+            _cooldownSlider.value = 0f;
         }
 
         public void ShowReadyState()
         {
             _lockOverlay.SetActive(false);
+            _borderLight.enabled = true;
             _button.interactable = true;
 
             transform.DOPunchScale(

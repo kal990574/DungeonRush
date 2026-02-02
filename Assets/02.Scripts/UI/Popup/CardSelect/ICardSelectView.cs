@@ -6,10 +6,11 @@ namespace DungeonRush.UI.Popup
     public interface ICardSelectView : IView
     {
         event Action<int> OnCardClicked;
-        event Action OnRerollClicked;
+        event Action<int> OnRerollClicked;
 
         void ShowCards(CardData[] cards);
-        void SetRerollButtonText(string text);
-        void SetRerollButtonInteractable(bool interactable);
+        void ShowCard(int index, CardData card);
+        void SetRerollText(int index, string text);
+        void SetRerollInteractable(int index, bool interactable);
     }
 }

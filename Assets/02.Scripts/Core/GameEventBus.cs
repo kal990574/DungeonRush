@@ -30,7 +30,8 @@ namespace DungeonRush.Core
         // 카드 선택 이벤트.
         public static event Action<CardData[]> OnCardChoicesReady;
         public static event Action<CardData> OnCardSelected;
-        public static event Action<int, int> OnRerollUsed;
+        public static event Action<int> OnCardRerollRequested;
+        public static event Action<int, CardData> OnCardRerolled;
 
         // 게임 오버 이벤트.
         public static event Action<int, int, int, float, int> OnGameOver;
@@ -112,9 +113,14 @@ namespace DungeonRush.Core
             OnCardSelected?.Invoke(card);
         }
 
-        public static void PublishRerollUsed(int rerollsRemaining, int cost)
+        public static void PublishCardRerollRequested(int cardIndex)
         {
-            OnRerollUsed?.Invoke(rerollsRemaining, cost);
+            OnCardRerollRequested?.Invoke(cardIndex);
+        }
+
+        public static void PublishCardRerolled(int cardIndex, CardData newCard)
+        {
+            OnCardRerolled?.Invoke(cardIndex, newCard);
         }
 
         public static void PublishGameOver(int chapter, int wave, int kills, float time, int score)
@@ -153,7 +159,8 @@ namespace DungeonRush.Core
             OnGoldChanged = null;
             OnCardChoicesReady = null;
             OnCardSelected = null;
-            OnRerollUsed = null;
+            OnCardRerollRequested = null;
+            OnCardRerolled = null;
             OnGameOver = null;
             OnSynergyActivated = null;
             OnSynergyDeactivated = null;

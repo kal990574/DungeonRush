@@ -11,7 +11,7 @@ namespace DungeonRush.UI.Popup
         protected override void SubscribeEvents()
         {
             GameEventBus.OnCardChoicesReady += HandleCardChoicesReady;
-            GameEventBus.OnRerollUsed += HandleRerollUsed;
+            GameEventBus.OnCardRerolled += HandleCardRerolled;
             View.OnCardClicked += HandleCardClicked;
             View.OnRerollClicked += HandleRerollClicked;
         }
@@ -19,7 +19,7 @@ namespace DungeonRush.UI.Popup
         protected override void UnsubscribeEvents()
         {
             GameEventBus.OnCardChoicesReady -= HandleCardChoicesReady;
-            GameEventBus.OnRerollUsed -= HandleRerollUsed;
+            GameEventBus.OnCardRerolled -= HandleCardRerolled;
             View.OnCardClicked -= HandleCardClicked;
             View.OnRerollClicked -= HandleRerollClicked;
         }
@@ -27,8 +27,7 @@ namespace DungeonRush.UI.Popup
         protected override void HandleModelChanged()
         {
             View.ShowCards(Model.Cards);
-            View.SetRerollButtonText(Model.RerollText);
-            View.SetRerollButtonInteractable(Model.CanReroll);
+            UpdateRerollButtons();
         }
 
         private void HandleCardChoicesReady(CardData[] cards)
@@ -37,9 +36,11 @@ namespace DungeonRush.UI.Popup
             View.Show();
         }
 
-        private void HandleRerollUsed(int rerollsRemaining, int cost)
+        private void HandleCardRerolled(int cardIndex, CardData newCard)
         {
-            Model.SetRerollInfo(rerollsRemaining, cost);
+            Model.ReplaceCard(cardIndex, newCard);
+            View.ShowCard(cardIndex, newCard);
+            UpdateRerollButtons();
         }
 
         private void HandleCardClicked(int cardIndex)
@@ -53,15 +54,23 @@ namespace DungeonRush.UI.Popup
             View.Hide();
         }
 
-        private void HandleRerollClicked()
+        private void HandleRerollClicked(int cardIndex)
         {
-            if (!Model.CanReroll)
+            if (!Model.CanRerollCard(cardIndex))
             {
                 return;
             }
 
-            // 리롤 요청은 외부 시스템에서 처리.
-            // Presenter는 결과(OnRerollUsed, OnCardChoicesReady)만 수신.
+            GameEventBus.PublishCardRerollRequested(cardIndex);
+        }
+
+        private void UpdateRerollButtons()
+        {
+            for (int i = 0; i < Model.Cards.Length; i++)
+            {
+                View.SetRerollText(i, Model.GetRerollText(i));
+                View.SetRerollInteractable(i, Model.CanRerollCard(i));
+            }
         }
     }
 }

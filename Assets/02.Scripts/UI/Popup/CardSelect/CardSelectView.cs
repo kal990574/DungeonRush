@@ -18,15 +18,15 @@ namespace DungeonRush.UI.Popup
         [SerializeField] private TextMeshProUGUI[] _cardNames = new TextMeshProUGUI[3];
         [SerializeField] private TextMeshProUGUI[] _cardDescriptions = new TextMeshProUGUI[3];
 
-        [Header("Reroll")]
-        [SerializeField] private Button _rerollButton;
-        [SerializeField] private TextMeshProUGUI _rerollText;
+        [Header("Reroll (Per Card)")]
+        [SerializeField] private Button[] _rerollButtons = new Button[3];
+        [SerializeField] private TextMeshProUGUI[] _rerollTexts = new TextMeshProUGUI[3];
 
         [Header("Panel")]
         [SerializeField] private CanvasGroup _canvasGroup;
 
         public event Action<int> OnCardClicked;
-        public event Action OnRerollClicked;
+        public event Action<int> OnRerollClicked;
 
         public bool IsVisible => gameObject.activeSelf;
 
@@ -36,9 +36,8 @@ namespace DungeonRush.UI.Popup
             {
                 int index = i;
                 _cardButtons[i].onClick.AddListener(() => OnCardClicked?.Invoke(index));
+                _rerollButtons[i].onClick.AddListener(() => OnRerollClicked?.Invoke(index));
             }
-
-            _rerollButton.onClick.AddListener(() => OnRerollClicked?.Invoke());
         }
 
         public void Show()
@@ -63,26 +62,38 @@ namespace DungeonRush.UI.Popup
                 if (i >= cards.Length || cards[i] == null)
                 {
                     _cardButtons[i].gameObject.SetActive(false);
+                    _rerollButtons[i].gameObject.SetActive(false);
                     continue;
                 }
 
                 _cardButtons[i].gameObject.SetActive(true);
-                _cardIcons[i].sprite = cards[i].icon;
-                _cardNames[i].text = cards[i].cardName;
-                _cardDescriptions[i].text = cards[i].description;
-
+                _rerollButtons[i].gameObject.SetActive(true);
+                SetCardSlot(i, cards[i]);
                 AnimateCardEntry(_cardButtons[i].transform, i);
             }
         }
 
-        public void SetRerollButtonText(string text)
+        public void ShowCard(int index, CardData card)
         {
-            _rerollText.text = text;
+            SetCardSlot(index, card);
+            AnimateCardEntry(_cardButtons[index].transform, 0);
         }
 
-        public void SetRerollButtonInteractable(bool interactable)
+        public void SetRerollText(int index, string text)
         {
-            _rerollButton.interactable = interactable;
+            _rerollTexts[index].text = text;
+        }
+
+        public void SetRerollInteractable(int index, bool interactable)
+        {
+            _rerollButtons[index].interactable = interactable;
+        }
+
+        private void SetCardSlot(int index, CardData card)
+        {
+            _cardIcons[index].sprite = card.icon;
+            _cardNames[index].text = card.cardName;
+            _cardDescriptions[index].text = card.description;
         }
 
         private void AnimateCardEntry(Transform cardTransform, int index)
