@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using _02.Scripts.Core;
 using UnityEngine;
 
 namespace _02.Scripts.Character
@@ -112,14 +113,26 @@ namespace _02.Scripts.Character
           _currentHp = _maxHp;
       }
       
-      public void TakeDamage(float damage)
+      public void TakeDamage(float damage, DamageType damageType)
       {
+          // True 데미지는 감소 무시.
+          if (damageType != DamageType.True)
+          {
+              float reduction = damageType == DamageType.Physical
+                  ? _physicalDamageReduction
+                  : _magicDamageReduction;
+
+              damage *= 1f - Mathf.Clamp01(reduction);
+          }
+
+          // 실드 흡수.
           if (_shield > 0)
           {
               float absorbed = Mathf.Min(_shield, damage);
               _shield -= absorbed;
               damage -= absorbed;
           }
+
           _currentHp = Mathf.Max(0, _currentHp - damage);
       }
       

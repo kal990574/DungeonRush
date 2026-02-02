@@ -10,7 +10,51 @@
 
 ---
 
-## Phase 1: Core 시스템 (의존성 없음)
+## 현재 구현 상태
+
+### Phase 1: Core 시스템 — ✅ 완료
+
+| 파일 | 상태 | 구현 내용 |
+|------|------|----------|
+| `Core/Singleton.cs` | ✅ | 스레드 안전 제네릭 싱글톤, `FindFirstObjectByType` 사용 |
+| `Core/GameState.cs` | ✅ | None, Menu, Playing, Paused, LevelUp, GameOver |
+| `Core/DamageType.cs` | ✅ | Physical, Magic, True |
+| `Core/GameEventBus.cs` | ✅ | 7개 이벤트 (State, Player×4, Combat×2) + Clear() |
+| `Core/ObjectPool.cs` | ✅ | MonoBehaviour 기반, Prewarm/Get/Return |
+| `Core/GameConfig.cs` | ✅ | Player/Stage/LevelUp/Reroll 설정 |
+| `Core/GameManager.cs` | ✅ | Singleton 상속, 상태 전환, TimeScale 제어 |
+
+### Phase 2: Character 시스템 — 부분 완료
+
+| 파일 | 상태 | 비고 |
+|------|------|------|
+| `Character/Interfaces/IDamageable.cs` | ✅ | CurrentHp, MaxHp, IsDead, TakeDamage, Heal |
+| `Character/Interfaces/IAttacker.cs` | ✅ | AttackPower, AttackSpeed, AttackRange, Attack |
+| `Character/Interfaces/IPoolable.cs` | ✅ | OnSpawn, OnDespawn |
+| `Character/CharacterStats.cs` | 🔧 부분 | 스탯 정의 완료, ATK/DEF 기본값·보너스 시스템 미구현 |
+| `Character/CharacterState.cs` | ❌ | 미구현 |
+| `Character/CharacterBase.cs` | ❌ | 미구현 |
+| `Character/PlayerController.cs` | ❌ | 미구현 |
+| `Character/EnemyController.cs` | ❌ | 미구현 |
+| `Character/EnemyData.cs` | ❌ | 미구현 |
+
+### Phase 3~5 — ❌ 미구현
+
+### 스펙 대비 차이점
+
+| 항목 | 스펙 | 실제 구현 | 사유 |
+|------|------|----------|------|
+| DamageType | Physical, Fire, Poison, True | Physical, Magic, True | Fire/Poison은 BuffType으로 분리 예정 |
+| GameEventBus 적 이벤트 | `EnemyController` 타입 | `IPoolable` 타입 | Phase 2에서 타입 변경 필요 |
+| ObjectPool | 순수 C# 클래스 | MonoBehaviour 기반 | Inspector 설정 편의성 |
+| GameConfig | `[CreateAssetMenu]` 포함 | 미포함 | 추가 필요 |
+| 네임스페이스 | — | `_02.Scripts.*` | 폴더명이 숫자로 시작하여 `_` 접두사 |
+
+---
+
+## Phase 1: Core 시스템 — ✅ 완료
+
+> 아래는 원래 계획입니다. 구현 완료되었으며 참고용으로 유지합니다.
 
 ### 1.1 폴더 생성
 ```
@@ -19,50 +63,52 @@ Assets/02.Scripts/Core/
 
 ### 1.2 파일 생성 순서
 
-| 순서 | 파일 | 설명 |
-|------|------|------|
-| 1 | `Singleton.cs` | 제네릭 싱글톤 기반 클래스 |
-| 2 | `GameState.cs` | 게임 상태 Enum (None, Menu, Playing, Paused, LevelUp, GameOver) |
-| 3 | `DamageType.cs` | 데미지 타입 Enum (Physical, Fire, Poison, True) |
-| 4 | `GameEventBus.cs` | 이벤트 중개 시스템 (기존 문서 기반) |
-| 5 | `ObjectPool.cs` | 제네릭 오브젝트 풀 + IPoolable 인터페이스 |
-| 6 | `GameConfig.cs` | 게임 설정 ScriptableObject |
-| 7 | `GameManager.cs` | 기존 파일 수정 - Singleton 상속, 상태 관리 |
+| 순서 | 파일 | 설명 | 상태 |
+|------|------|------|------|
+| 1 | `Singleton.cs` | 제네릭 싱글톤 기반 클래스 | ✅ |
+| 2 | `GameState.cs` | 게임 상태 Enum | ✅ |
+| 3 | `DamageType.cs` | 데미지 타입 Enum | ✅ |
+| 4 | `GameEventBus.cs` | 이벤트 중개 시스템 | ✅ |
+| 5 | `ObjectPool.cs` | 제네릭 오브젝트 풀 | ✅ |
+| 6 | `GameConfig.cs` | 게임 설정 ScriptableObject | ✅ |
+| 7 | `GameManager.cs` | Singleton 상속, 상태 관리 | ✅ |
 
 ### 1.3 핵심 구현 내용
 
 **GameEventBus.cs** (SystemDependency.md 기반):
 ```csharp
-// 필수 이벤트만 먼저 구현
-- OnGameStateChanged
-- OnPlayerHPChanged
-- OnPlayerDeath
-- OnEnemySpawned
-- OnEnemyKilled
+// 구현 완료된 이벤트
+- OnGameStateChanged      ✅
+- OnPlayerHpChanged        ✅ (HP → Hp로 명명)
+- OnPlayerXpChanged        ✅
+- OnPlayerLevelUp          ✅
+- OnPlayerDeath            ✅
+- OnEnemySpawned           ✅
+- OnEnemyKilled            ✅
 ```
 
 ---
 
-## Phase 2: Character 시스템 (Core 의존)
+## Phase 2: Character 시스템 (Core 의존) — 🔧 진행 중
 
-### 2.1 폴더 생성
+### 2.1 폴더
 ```
-Assets/02.Scripts/Character/
-Assets/02.Scripts/Character/Interfaces/
+Assets/02.Scripts/Character/          ← 이미 존재
+Assets/02.Scripts/Character/Interfaces/ ← 이미 존재
 ```
 
-### 2.2 파일 생성 순서
+### 2.2 남은 파일 생성 순서
 
-| 순서 | 파일 | 설명 |
-|------|------|------|
-| 1 | `IDamageable.cs` | 데미지 수신 인터페이스 |
-| 2 | `IAttacker.cs` | 공격 수행 인터페이스 |
-| 3 | `IPoolable.cs` | 풀링 대상 인터페이스 |
-| 4 | `CharacterState.cs` | 캐릭터 상태 Enum (Idle, Moving, Attacking, Stunned, Dead) |
-| 5 | `CharacterStats.cs` | 런타임 스탯 클래스 (DataStructure.md 기반) |
-| 6 | `CharacterBase.cs` | 캐릭터 추상 기반 클래스 |
-| 7 | `PlayerController.cs` | 플레이어 컨트롤러 (SPUM 연동) |
-| 8 | `EnemyController.cs` | 적 컨트롤러 (SPUM 연동, IPoolable) |
+| 순서 | 파일 | 설명 | 상태 |
+|------|------|------|------|
+| 1 | `IDamageable.cs` | 데미지 수신 인터페이스 | ✅ |
+| 2 | `IAttacker.cs` | 공격 수행 인터페이스 | ✅ |
+| 3 | `IPoolable.cs` | 풀링 대상 인터페이스 | ✅ |
+| 4 | `CharacterState.cs` | 캐릭터 상태 Enum (Idle, Moving, Attacking, Stunned, Dead) | ❌ |
+| 5 | `CharacterStats.cs` | ATK/DEF 기본값 추가, 보너스 시스템 | 🔧 |
+| 6 | `CharacterBase.cs` | 캐릭터 추상 기반 클래스 | ❌ |
+| 7 | `PlayerController.cs` | 플레이어 컨트롤러 (SPUM 연동) | ❌ |
+| 8 | `EnemyController.cs` | 적 컨트롤러 (SPUM 연동, IPoolable) | ❌ |
 
 ### 2.3 SPUM 연동 핵심
 
