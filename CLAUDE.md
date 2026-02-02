@@ -48,7 +48,48 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - 미사용 변수, 죽은 코드(dead code) 정리
 - 테스트 가능성, 확장 가능성 향상
 
-### 0.3. 인터페이스 우선 설계 (Interface-First Design)
+### 0.3. YAGNI 원칙 (You Aren't Gonna Need It)
+
+**"지금 당장 필요하지 않은 것은 구현하지 마라"**
+
+- 현재 사용되지 않는 이벤트, 함수, 콜백은 **작성하지 않음**
+- "나중에 쓸 것 같다"는 추측으로 미리 구현 금지
+- 빈 메서드, 미사용 인터페이스 멤버, 호출처 없는 유틸리티 함수 금지
+- 필요한 시점에 구현해도 충분하며, 미리 만든 코드는 유지보수 부담만 증가
+- **예외**: 프레임워크/엔진이 강제하는 생명주기 메서드(예: `Start()`, `Update()`)는 제외
+
+```csharp
+// Good - 현재 필요한 것만 구현.
+public class EnemyController : MonoBehaviour
+{
+    public void TakeDamage(float amount)
+    {
+        _currentHp -= amount;
+    }
+}
+
+// Bad - 호출처가 없는데 "나중에 쓸 것 같아서" 미리 구현.
+public class EnemyController : MonoBehaviour
+{
+    public event Action OnDamaged;      // 아무도 구독하지 않음.
+    public event Action OnHealed;       // 힐 시스템이 아직 없음.
+    public event Action OnStatusEffect; // 상태이상 시스템 미구현.
+
+    public void TakeDamage(float amount)
+    {
+        _currentHp -= amount;
+        OnDamaged?.Invoke();
+    }
+
+    public void Heal(float amount)      // 호출처 없음.
+    {
+        _currentHp += amount;
+        OnHealed?.Invoke();
+    }
+}
+```
+
+### 0.4. 인터페이스 우선 설계 (Interface-First Design)
 
 #### 핵심 원칙
 - **구현보다 추상화 우선**: 클래스 작성 전 인터페이스부터 정의

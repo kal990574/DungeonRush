@@ -14,6 +14,10 @@ namespace _02.Scripts.Core
         public static event Action<int> OnPlayerLevelUp;
         public static event Action OnPlayerDeath;
 
+        // stage
+        public static event Action<int, int> OnWaveStart;
+        public static event Action<int, int> OnWaveComplete;
+
         // combat
         public static event Action<EnemyController> OnEnemySpawned;
         public static event Action<EnemyController, int> OnEnemyKilled;
@@ -44,6 +48,16 @@ namespace _02.Scripts.Core
             OnPlayerDeath?.Invoke();
         }
 
+        public static void RaiseWaveStart(int chapter, int wave)
+        {
+            OnWaveStart?.Invoke(chapter, wave);
+        }
+
+        public static void RaiseWaveComplete(int chapter, int wave)
+        {
+            OnWaveComplete?.Invoke(chapter, wave);
+        }
+
         public static void RaiseEnemySpawned(EnemyController enemy)
         {
             OnEnemySpawned?.Invoke(enemy);
@@ -62,6 +76,8 @@ namespace _02.Scripts.Core
             OnPlayerXpChanged = null;
             OnPlayerLevelUp = null;
             OnPlayerDeath = null;
+            OnWaveStart = null;
+            OnWaveComplete = null;
             OnEnemySpawned = null;
             OnEnemyKilled = null;
         }
