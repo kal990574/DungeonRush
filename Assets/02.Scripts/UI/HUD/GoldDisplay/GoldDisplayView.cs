@@ -31,6 +31,8 @@ namespace DungeonRush.UI.HUD
 
         public void PlayGainAnimation()
         {
+            transform.DOKill();
+            transform.localScale = Vector3.one;
             transform.DOPunchScale(
                     Vector3.one * (GainPunchScale - 1f),
                     GainPunchDuration)

@@ -664,6 +664,55 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 139305695}
   m_CullTransparentMesh: 0
+--- !u!1 &161612676
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 161612678}
+  - component: {fileID: 161612677}
+  m_Layer: 0
+  m_Name: HUDTestController
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &161612677
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161612676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3106df1ff4e0f6c4e8ff3a03deda4c79, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxHP: 100
+  _damageAmount: 15
+  _xpGainAmount: 25
+  _requiredXP: 100
+  _goldGainAmount: 50
+--- !u!4 &161612678
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 161612676}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &212824914
 GameObject:
   m_ObjectHideFlags: 0
@@ -2655,7 +2704,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 181b464bb2e5b1e479c7e25af4bcfefc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _fillImage: {fileID: 587134601}
+  _fillImage: {fileID: 53834818}
   _damageFillImage: {fileID: 1153148819}
   _hpText: {fileID: 1990915421}
 --- !u!1 &585320128
@@ -2989,7 +3038,7 @@ GameObject:
   - component: {fileID: 692227578}
   - component: {fileID: 692227577}
   m_Layer: 5
-  m_Name: HUD
+  m_Name: HUDCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -4624,7 +4673,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -66, y: 0}
+  m_AnchoredPosition: {x: 0, y: 36.8}
   m_SizeDelta: {x: 56, y: 41}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1035201559
@@ -4727,7 +4776,7 @@ MonoBehaviour:
   m_PreserveAspect: 0
   m_FillCenter: 1
   m_FillMethod: 0
-  m_FillAmount: 1
+  m_FillAmount: 0
   m_FillClockwise: 1
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
@@ -9111,3 +9160,4 @@ SceneRoots:
   - {fileID: 1329641680}
   - {fileID: 120349772}
   - {fileID: 8997923}
+  - {fileID: 161612678}

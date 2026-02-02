@@ -34,6 +34,8 @@ namespace DungeonRush.UI.Synergy
 
         public void PlayActivateAnimation()
         {
+            transform.DOKill();
+            transform.localScale = Vector3.one;
             transform.DOPunchScale(
                     Vector3.one * (ActivatePunchScale - 1f),
                     ActivatePunchDuration)
@@ -42,6 +44,8 @@ namespace DungeonRush.UI.Synergy
 
         public void PlayDeactivateAnimation()
         {
+            transform.DOKill();
+            transform.localScale = Vector3.one;
             transform.DOPunchScale(
                     Vector3.one * -0.1f,
                     ActivatePunchDuration)

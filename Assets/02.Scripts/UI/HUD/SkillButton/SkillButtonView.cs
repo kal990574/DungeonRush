@@ -55,6 +55,8 @@ namespace DungeonRush.UI.HUD
             _borderLight.enabled = true;
             _button.interactable = true;
 
+            transform.DOKill();
+            transform.localScale = Vector3.one;
             transform.DOPunchScale(
                     Vector3.one * (ReadyPunchScale - 1f),
                     ReadyPunchDuration)

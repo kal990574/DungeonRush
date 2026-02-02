@@ -8,7 +8,6 @@ namespace DungeonRush.UI.HUD
     public class XPBarView : MonoBehaviour, IXPBarView
     {
         private const float FillAnimationDuration = 0.3f;
-        private const float LevelUpPunchScale = 1.2f;
         private const float LevelUpPunchDuration = 0.3f;
 
         [Header("References")]
@@ -42,8 +41,10 @@ namespace DungeonRush.UI.HUD
         {
             _fillImage.fillAmount = 0f;
 
+            transform.DOKill();
+            transform.localScale = Vector3.one;
             transform.DOPunchScale(
-                    Vector3.one * (LevelUpPunchScale - 1f),
+                    new Vector3(0f, 0.3f, 0f),
                     LevelUpPunchDuration)
                 .SetEase(Ease.OutCubic);
         }

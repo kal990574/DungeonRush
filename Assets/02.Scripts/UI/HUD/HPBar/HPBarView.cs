@@ -53,6 +53,8 @@ namespace DungeonRush.UI.HUD
 
         public void PlayHealAnimation()
         {
+            transform.DOKill();
+            transform.localScale = Vector3.one;
             transform.DOPunchScale(
                     Vector3.one * (HealPunchScale - 1f),
                     HealPunchDuration)

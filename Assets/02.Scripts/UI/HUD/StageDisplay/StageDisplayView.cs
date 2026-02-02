@@ -30,6 +30,8 @@ namespace DungeonRush.UI.HUD
         {
             _stageText.text = text;
 
+            transform.DOKill();
+            transform.localScale = Vector3.one;
             transform.DOPunchScale(
                     Vector3.one * 0.1f,
                     TransitionDuration)
@@ -42,6 +44,8 @@ namespace DungeonRush.UI.HUD
 
             if (show)
             {
+                _bossIndicator.transform.DOKill();
+                _bossIndicator.transform.localScale = Vector3.one;
                 _bossIndicator.transform.DOPunchScale(
                         Vector3.one * (BossPunchScale - 1f),
                         BossPunchDuration)
