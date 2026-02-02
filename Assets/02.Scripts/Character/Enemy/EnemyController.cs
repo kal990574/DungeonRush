@@ -17,7 +17,7 @@ namespace _02.Scripts.Character.Enemy
         {
             _data = data;
             _target = target;
-            _maxHp = data.maxHp;
+            _maxHp = data.MaxHp;
             _currentHp = _maxHp;
         }
 
@@ -27,7 +27,7 @@ namespace _02.Scripts.Character.Enemy
 
             float distance = Vector2.Distance(transform.position, _target.position);
 
-            if (distance <= _data.attackRange)
+            if (distance <= _data.AttackRange)
             {
                 Attack();
             }
@@ -41,7 +41,7 @@ namespace _02.Scripts.Character.Enemy
         {
             SetState(CharacterState.Running);
             var direction = (_target.position - transform.position).normalized;
-            transform.position += direction * (_data.moveSpeed * Time.deltaTime);
+            transform.position += direction * (_data.MoveSpeed * Time.deltaTime);
         }
 
         private void Attack()
@@ -49,11 +49,11 @@ namespace _02.Scripts.Character.Enemy
             _attackTimer -= Time.deltaTime;
             if (_attackTimer > 0f) return;
 
-            _attackTimer = 1f / _data.attackSpeed;
+            _attackTimer = 1f / _data.AttackSpeed;
             SetState(CharacterState.Attacking);
 
             var targetDamageable = _target.GetComponent<IDamageable>();
-            targetDamageable?.TakeDamage(_data.attackDamage, DamageType.Physical);
+            targetDamageable?.TakeDamage(_data.AttackDamage, DamageType.Physical);
         }
 
         protected override void OnDamageTaken(float damage)
@@ -63,7 +63,7 @@ namespace _02.Scripts.Character.Enemy
 
         protected override void OnDeath()
         {
-            GameEventBus.RaiseEnemyKilled(this, _data.xpReward);
+            GameEventBus.RaiseEnemyKilled(this, _data.XpReward);
         }
 
         public void OnSpawn()

@@ -7,21 +7,21 @@ namespace _02.Scripts.Data.Skill
     public class SkillData : ScriptableObject
     {
         [Header("Basic Info")]
-        public string skillName;
-        public Sprite icon;
+        public string SkillName;
+        public Sprite Icon;
 
         [Header("Damage")]
-        public float baseDamage = 10f;
-        public DamageType damageType = DamageType.Physical;
+        public float BaseDamage = 10f;
+        public DamageType DamageType = DamageType.Physical;
 
         [Header("Targeting")]
-        public float range = 5f;
+        public float Range = 5f;
 
         [Header("Cooldown")]
-        public float cooldown = 2f;
+        public float Cooldown = 2f;
 
         [Header("Scaling")]
-        public float damagePerLevel = 0.1f;
-        public int maxLevel = 5;
+        public float DamagePerLevel = 0.1f;
+        public int MaxLevel = 5;
     }
 }

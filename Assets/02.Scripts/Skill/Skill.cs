@@ -24,12 +24,12 @@ namespace _02.Scripts.Skill
 
         public void Execute(PlayerStats casterStats, IDamageable target)
         {
-            if (!IsReady) return;
+            if (!IsReady || target == null || target.IsDead) return;
 
             float damage = CalculateDamage(casterStats);
-            target.TakeDamage(damage, _data.damageType);
+            target.TakeDamage(damage, _data.DamageType);
 
-            _cooldownRemaining = _data.cooldown;
+            _cooldownRemaining = _data.Cooldown;
         }
 
         public void UpdateCooldown(float deltaTime)
@@ -42,7 +42,7 @@ namespace _02.Scripts.Skill
 
         public void LevelUp()
         {
-            if (_level < _data.maxLevel)
+            if (_level < _data.MaxLevel)
             {
                 _level++;
             }
@@ -50,8 +50,8 @@ namespace _02.Scripts.Skill
 
         private float CalculateDamage(PlayerStats stats)
         {
-            float levelBonus = 1f + (_level - 1) * _data.damagePerLevel;
-            float baseDamage = _data.baseDamage * levelBonus;
+            float levelBonus = 1f + (_level - 1) * _data.DamagePerLevel;
+            float baseDamage = _data.BaseDamage * levelBonus;
             return DamageCalculator.Calculate(baseDamage, stats);
         }
     }

@@ -2,6 +2,7 @@
 
 namespace _02.Scripts.Core
 {
+    [CreateAssetMenu(fileName = "GameConfig", menuName = "DungeonRush/Config/Game Config")]
     public class GameConfig : ScriptableObject
     {
         [Header("Player Initial Stats")]

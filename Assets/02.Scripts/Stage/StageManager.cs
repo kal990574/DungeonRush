@@ -6,15 +6,27 @@ namespace _02.Scripts.Stage
 {
     public class StageManager : MonoBehaviour
     {
+        [Header("References")]
         [SerializeField] private WaveController _waveController;
-        [SerializeField] private EnemyData _protoEnemyData;
+
+        [Header("Stage Settings")]
         [SerializeField] private int _wavesPerChapter = 10;
+        [SerializeField] private int _enemiesPerWave = 10;
+
+        [Header("Enemy Data")]
+        [SerializeField] private EnemyData _normalEnemyData;
+        [SerializeField] private EnemyData _bossEnemyData;
+
+        [Header("Tempo")]
+        [SerializeField] private float _normalWaveDelay = 0.5f;
+        [SerializeField] private float _bossWaveDelay = 1.0f;
 
         private int _currentChapter = 1;
         private int _currentWave = 1;
 
         public int CurrentChapter => _currentChapter;
         public int CurrentWave => _currentWave;
+        public bool IsBossWave => _currentWave == _wavesPerChapter;
 
         private void OnEnable()
         {
@@ -40,7 +52,7 @@ namespace _02.Scripts.Stage
         {
             _currentChapter = 1;
             _currentWave = 1;
-            _waveController.StartWave(_currentChapter, _currentWave, _protoEnemyData);
+            StartCurrentWave();
         }
 
         private void HandleWaveComplete(int chapter, int wave)
@@ -53,7 +65,23 @@ namespace _02.Scripts.Stage
                 _currentWave = 1;
             }
 
-            _waveController.StartWave(_currentChapter, _currentWave, _protoEnemyData);
+            StartCurrentWave();
+        }
+
+        private void StartCurrentWave()
+        {
+            if (IsBossWave)
+            {
+                _waveController.StartWave(
+                    _currentChapter, _currentWave,
+                    _bossEnemyData, 1, _bossWaveDelay);
+            }
+            else
+            {
+                _waveController.StartWave(
+                    _currentChapter, _currentWave,
+                    _normalEnemyData, _enemiesPerWave, _normalWaveDelay);
+            }
         }
     }
 }

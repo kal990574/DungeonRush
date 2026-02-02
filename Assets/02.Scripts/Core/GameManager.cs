@@ -18,6 +18,11 @@ public class GameManager : Singleton<GameManager>
         Initialize();
     }
 
+    private void Start()
+    {
+        ChangeState(GameState.Playing);
+    }
+
     private void Initialize()
     {
         Application.targetFrameRate = 60;

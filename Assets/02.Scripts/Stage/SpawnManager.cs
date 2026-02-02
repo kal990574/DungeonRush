@@ -8,7 +8,7 @@ namespace _02.Scripts.Stage
 {
     public class SpawnManager : MonoBehaviour
     {
-        [SerializeField] private ObjectPool<EnemyController> _enemyPool;
+        [SerializeField] private EnemyPool _enemyPool;
         [SerializeField] private Transform _playerTransform;
         [SerializeField] private float _spawnDistance = 8f;
         [SerializeField] private float _despawnDelay = 0.5f;

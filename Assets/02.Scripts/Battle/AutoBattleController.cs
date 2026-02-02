@@ -64,7 +64,7 @@ namespace _02.Scripts.Battle
                 _player.transform.position,
                 _currentTarget.transform.position);
 
-            if (distance > readySkill.Data.range) return;
+            if (distance > readySkill.Data.Range) return;
 
             readySkill.Execute(_player.Stats, _currentTarget);
         }
