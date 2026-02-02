@@ -1,5 +1,5 @@
 ﻿using System;
-using _02.Scripts.Character.Interfaces;
+using _02.Scripts.Character.Enemy;
 
 namespace _02.Scripts.Core
 {
@@ -15,8 +15,8 @@ namespace _02.Scripts.Core
         public static event Action OnPlayerDeath;
 
         // combat
-        public static event Action<IPoolable> OnEnemySpawned;
-        public static event Action<IPoolable, int> OnEnemyKilled;
+        public static event Action<EnemyController> OnEnemySpawned;
+        public static event Action<EnemyController, int> OnEnemyKilled;
 
         // Invoke
         public static void RaiseGameStateChanged(GameState gameState)
@@ -44,12 +44,12 @@ namespace _02.Scripts.Core
             OnPlayerDeath?.Invoke();
         }
 
-        public static void RaiseEnemySpawned(IPoolable enemy)
+        public static void RaiseEnemySpawned(EnemyController enemy)
         {
             OnEnemySpawned?.Invoke(enemy);
         }
 
-        public static void RaiseEnemyKilled(IPoolable enemy, int xpReward)
+        public static void RaiseEnemyKilled(EnemyController enemy, int xpReward)
         {
             OnEnemyKilled?.Invoke(enemy, xpReward);
         }

@@ -6,16 +6,15 @@ namespace _02.Scripts.Character
 {
     public abstract class CharacterBase : MonoBehaviour, IDamageable
     {
-        [Header("Stats")]
-        [SerializeField] protected CharacterStats _stats;
-
+        protected float _currentHp;
+        protected float _maxHp;
         protected CharacterState _currentState = CharacterState.Running;
         protected SPUM_Prefabs _spumPrefabs;
 
         // IDamageable.
-        public float CurrentHp => _stats.CurrentHp;
-        public float MaxHp => _stats.MaxHp;
-        public bool IsDead => _stats.IsDead;
+        public float CurrentHp => _currentHp;
+        public float MaxHp => _maxHp;
+        public bool IsDead => _currentHp <= 0;
 
         public CharacterState CurrentState => _currentState;
 
@@ -26,16 +25,15 @@ namespace _02.Scripts.Character
 
         protected virtual void Start()
         {
-            _stats.Initialize();
             _spumPrefabs.OverrideControllerInit();
             PlayAnimation(CharacterState.Running);
         }
 
-        public void TakeDamage(float damage, DamageType damageType)
+        public virtual void TakeDamage(float damage, DamageType damageType)
         {
             if (IsDead) return;
 
-            _stats.TakeDamage(damage, damageType);
+            _currentHp = Mathf.Max(0, _currentHp - damage);
             OnDamageTaken(damage);
 
             if (IsDead)
@@ -48,7 +46,7 @@ namespace _02.Scripts.Character
         public void Heal(float amount)
         {
             if (IsDead) return;
-            _stats.Heal(amount);
+            _currentHp = Mathf.Min(_currentHp + amount, _maxHp);
         }
 
         protected void SetState(CharacterState newState)

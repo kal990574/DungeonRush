@@ -2,10 +2,10 @@ using System;
 using _02.Scripts.Core;
 using UnityEngine;
 
-namespace _02.Scripts.Character
+namespace _02.Scripts.Character.Player
 {
     [Serializable]
-    public class CharacterStats
+    public class PlayerStats
     {
       [Header("Survival - 생존")]
       [SerializeField] private float _maxHp = 100f;
