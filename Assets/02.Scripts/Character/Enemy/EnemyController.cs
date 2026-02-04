@@ -10,6 +10,7 @@ namespace _02.Scripts.Character.Enemy
         private EnemyData _data;
         private Transform _target;
         private float _attackTimer;
+        private IDamageable _targetDamageable;
 
         public EnemyData Data => _data;
 
@@ -17,15 +18,16 @@ namespace _02.Scripts.Character.Enemy
         {
             _data = data;
             _target = target;
-            _maxHp = data.MaxHp;
-            _currentHp = _maxHp;
+            _targetDamageable = target.GetComponent<IDamageable>();
+            _health.Initialize(data.MaxHp);
         }
 
         private void Update()
         {
             if (IsDead || _target == null) return;
 
-            float distance = Vector2.Distance(transform.position, _target.position);
+            float distance = Vector2.Distance(
+                transform.position, _target.position);
 
             if (distance <= _data.AttackRange)
             {
@@ -40,8 +42,10 @@ namespace _02.Scripts.Character.Enemy
         private void MoveToTarget()
         {
             SetState(CharacterState.Running);
-            var direction = (_target.position - transform.position).normalized;
-            transform.position += direction * (_data.MoveSpeed * Time.deltaTime);
+            var direction =
+                (_target.position - transform.position).normalized;
+            transform.position +=
+                direction * (_data.MoveSpeed * Time.deltaTime);
         }
 
         private void Attack()
@@ -52,13 +56,8 @@ namespace _02.Scripts.Character.Enemy
             _attackTimer = 1f / _data.AttackSpeed;
             SetState(CharacterState.Attacking);
 
-            var targetDamageable = _target.GetComponent<IDamageable>();
-            targetDamageable?.TakeDamage(_data.AttackDamage, DamageType.Physical);
-        }
-
-        protected override void OnDamageTaken(float damage)
-        {
-            // 프로토: 피격 이펙트 추후 추가.
+            _targetDamageable?.TakeDamage(
+                _data.AttackDamage, DamageType.Physical);
         }
 
         protected override void OnDeath()
@@ -76,6 +75,7 @@ namespace _02.Scripts.Character.Enemy
         {
             _data = null;
             _target = null;
+            _targetDamageable = null;
         }
     }
 }

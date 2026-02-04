@@ -1,44 +1,49 @@
+using _02.Scripts.Character.Interfaces;
 using _02.Scripts.Core;
+using _02.Scripts.Data.Player;
 using UnityEngine;
 
 namespace _02.Scripts.Character.Player
 {
     public class PlayerController : CharacterBase
     {
-        [SerializeField] private PlayerStats _playerStats;
+        [SerializeField] private PlayerData _playerData;
 
-        public PlayerStats Stats => _playerStats;
+        private PlayerCombatStats _combatStats;
+
+        public ICombatStats CombatStats => _combatStats;
+        public float XpMultiplier => _combatStats.XpMultiplier;
+
+        protected override void Awake()
+        {
+            base.Awake();
+            _combatStats = new PlayerCombatStats(_playerData);
+        }
 
         protected override void Start()
         {
-            _maxHp = _playerStats.MaxHp;
-            _currentHp = _maxHp;
+            _health.Initialize(_playerData.MaxHp);
+            _health.OnHpChanged += HandleHpChanged;
             base.Start();
         }
 
-        public override void TakeDamage(float damage, DamageType damageType)
+        protected override void OnDestroy()
         {
-            if (IsDead) return;
-
-            _playerStats.TakeDamage(damage, damageType);
-            _currentHp = _playerStats.CurrentHp;
-            OnDamageTaken(damage);
-
-            if (IsDead)
+            if (_health != null)
             {
-                SetState(CharacterState.Dead);
-                OnDeath();
+                _health.OnHpChanged -= HandleHpChanged;
             }
-        }
-
-        protected override void OnDamageTaken(float damage)
-        {
-            GameEventBus.RaisePlayerHpChanged(CurrentHp, MaxHp);
+            base.OnDestroy();
         }
 
         protected override void OnDeath()
         {
             GameEventBus.RaisePlayerDeath();
+        }
+
+        private void HandleHpChanged(float current, float max)
+        {
+            GameEventBus.RaisePlayerHpChanged(current, max);
         }
     }
 }

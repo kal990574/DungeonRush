@@ -1,52 +1,36 @@
-using _02.Scripts.Character.Interfaces;
-using _02.Scripts.Core;
 using UnityEngine;
 
 namespace _02.Scripts.Character
 {
-    public abstract class CharacterBase : MonoBehaviour, IDamageable
+    public abstract class CharacterBase : MonoBehaviour
     {
-        protected float _currentHp;
-        protected float _maxHp;
         protected CharacterState _currentState = CharacterState.Running;
         protected SPUM_Prefabs _spumPrefabs;
-
-        // IDamageable.
-        public float CurrentHp => _currentHp;
-        public float MaxHp => _maxHp;
-        public bool IsDead => _currentHp <= 0;
+        protected HealthComponent _health;
 
         public CharacterState CurrentState => _currentState;
+        public HealthComponent Health => _health;
+        public bool IsDead => _health.IsDead;
 
         protected virtual void Awake()
         {
             _spumPrefabs = GetComponentInChildren<SPUM_Prefabs>();
+            _health = GetComponent<HealthComponent>();
         }
 
         protected virtual void Start()
         {
             _spumPrefabs.OverrideControllerInit();
             PlayAnimation(CharacterState.Running);
+            _health.OnDied += HandleDeath;
         }
 
-        public virtual void TakeDamage(float damage, DamageType damageType)
+        protected virtual void OnDestroy()
         {
-            if (IsDead) return;
-
-            _currentHp = Mathf.Max(0, _currentHp - damage);
-            OnDamageTaken(damage);
-
-            if (IsDead)
+            if (_health != null)
             {
-                SetState(CharacterState.Dead);
-                OnDeath();
+                _health.OnDied -= HandleDeath;
             }
-        }
-
-        public void Heal(float amount)
-        {
-            if (IsDead) return;
-            _currentHp = Mathf.Min(_currentHp + amount, _maxHp);
         }
 
         protected void SetState(CharacterState newState)
@@ -68,7 +52,12 @@ namespace _02.Scripts.Character
             _spumPrefabs.PlayAnimation(spumState, 0);
         }
 
-        protected abstract void OnDamageTaken(float damage);
+        private void HandleDeath()
+        {
+            SetState(CharacterState.Dead);
+            OnDeath();
+        }
+
         protected abstract void OnDeath();
     }
 }

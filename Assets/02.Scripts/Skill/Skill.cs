@@ -1,8 +1,6 @@
 using _02.Scripts.Battle;
 using _02.Scripts.Character.Interfaces;
-using _02.Scripts.Character.Player;
 using _02.Scripts.Data.Skill;
-using UnityEngine;
 
 namespace _02.Scripts.Skill
 {
@@ -22,7 +20,7 @@ namespace _02.Scripts.Skill
             _data = data;
         }
 
-        public void Execute(PlayerStats casterStats, IDamageable target)
+        public void Execute(ICombatStats casterStats, IDamageable target)
         {
             if (!IsReady || target == null || target.IsDead) return;
 
@@ -48,7 +46,7 @@ namespace _02.Scripts.Skill
             }
         }
 
-        private float CalculateDamage(PlayerStats stats)
+        private float CalculateDamage(ICombatStats stats)
         {
             float levelBonus = 1f + (_level - 1) * _data.DamagePerLevel;
             float baseDamage = _data.BaseDamage * levelBonus;

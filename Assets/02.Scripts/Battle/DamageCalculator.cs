@@ -1,17 +1,17 @@
-using _02.Scripts.Character.Player;
+using _02.Scripts.Character.Interfaces;
 using UnityEngine;
 
 namespace _02.Scripts.Battle
 {
     public static class DamageCalculator
     {
-        public static float Calculate(float baseDamage, PlayerStats playerStats)
+        public static float Calculate(float baseDamage, ICombatStats stats)
         {
-            float damage = baseDamage * playerStats.DamageMultiplier;
+            float damage = baseDamage * stats.DamageMultiplier;
 
-            if (Random.value < playerStats.CritChance)
+            if (Random.value < stats.CritChance)
             {
-                damage *= playerStats.CritDamage;
+                damage *= stats.CritDamage;
             }
 
             return Mathf.Max(1f, damage);

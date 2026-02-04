@@ -1,5 +1,4 @@
 using _02.Scripts.Character.Enemy;
-using _02.Scripts.Character.Interfaces;
 using _02.Scripts.Character.Player;
 using _02.Scripts.Core;
 using _02.Scripts.Data.Skill;
@@ -52,7 +51,8 @@ namespace _02.Scripts.Battle
             if (_searchTimer <= 0f)
             {
                 _searchTimer = _targetSearchInterval;
-                _currentTarget = _battleMediator.FindNearestEnemy(_player.transform.position);
+                _currentTarget = _battleMediator.FindNearestEnemy(
+                    _player.transform.position);
             }
 
             if (_currentTarget == null || _currentTarget.IsDead) return;
@@ -66,7 +66,7 @@ namespace _02.Scripts.Battle
 
             if (distance > readySkill.Data.Range) return;
 
-            readySkill.Execute(_player.Stats, _currentTarget);
+            readySkill.Execute(_player.CombatStats, _currentTarget.Health);
         }
 
         public SkillSlotManager SkillSlots => _skillSlots;

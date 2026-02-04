@@ -7,7 +7,7 @@ namespace _02.Scripts.Upgrade
 {
     public class LevelUpManager : MonoBehaviour
     {
-        [SerializeField] private PlayerStats _playerStats;
+        [SerializeField] private PlayerController _player;
 
         private int _currentLevel = 1;
         private float _currentXp;
@@ -35,7 +35,7 @@ namespace _02.Scripts.Upgrade
 
         private void HandleEnemyKilled(EnemyController enemy, int xpReward)
         {
-            float xpGain = xpReward * _playerStats.XpMultiplier;
+            float xpGain = xpReward * _player.XpMultiplier;
             AddXp(xpGain);
         }
 
