@@ -6,6 +6,7 @@ public class SkillExecutor : MonoBehaviour
 
     private float _lastExecuteTime = -999f;
     private ProjectilePool _projectilePool;
+    private EffectPool _effectPool;
 
     public float AttackRange => _skillData.range;
 
@@ -13,7 +14,12 @@ public class SkillExecutor : MonoBehaviour
     {
         if (_skillData.skillType == SkillType.Projectile)
         {
-            InitializePool();
+            InitializeProjectilePool();
+        }
+
+        if (_skillData.hitEffectPrefab != null)
+        {
+            InitializeEffectPool();
         }
     }
 
@@ -60,13 +66,20 @@ public class SkillExecutor : MonoBehaviour
         Projectile projectile = _projectilePool.Get();
         projectile.transform.position = transform.position;
         projectile.Initialize(
-            _skillData.damage, _skillData.projectileSpeed, target, _projectilePool);
+            _skillData.damage, _skillData.projectileSpeed, target, _projectilePool, _effectPool);
     }
 
-    private void InitializePool()
+    private void InitializeProjectilePool()
     {
         var poolObj = new GameObject($"Pool_{_skillData.skillName}");
         _projectilePool = poolObj.AddComponent<ProjectilePool>();
         _projectilePool.Initialize(_skillData.projectilePrefab);
+    }
+
+    private void InitializeEffectPool()
+    {
+        var poolObj = new GameObject($"EffectPool_{_skillData.skillName}");
+        _effectPool = poolObj.AddComponent<EffectPool>();
+        _effectPool.Initialize(_skillData.hitEffectPrefab);
     }
 }

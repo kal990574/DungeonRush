@@ -7,17 +7,19 @@ public class Projectile : MonoBehaviour
     private Transform _target;
     private IDamageable _targetDamageable;
     private ProjectilePool _pool;
+    private EffectPool _effectPool;
     private float _spawnTime;
     private const float Lifetime = 5f;
     private const float HitDistance = 0.2f;
 
-    public void Initialize(float damage, float speed, Transform target, ProjectilePool pool)
+    public void Initialize(float damage, float speed, Transform target, ProjectilePool pool, EffectPool effectPool)
     {
         _damage = damage;
         _speed = speed;
         _target = target;
         _targetDamageable = target.GetComponent<IDamageable>();
         _pool = pool;
+        _effectPool = effectPool;
         _spawnTime = Time.time;
     }
 
@@ -34,6 +36,7 @@ public class Projectile : MonoBehaviour
         if (HasReachedTarget())
         {
             _targetDamageable.TakeDamage(_damage);
+            _effectPool?.Play(transform.position);
             _pool.Return(this);
         }
     }

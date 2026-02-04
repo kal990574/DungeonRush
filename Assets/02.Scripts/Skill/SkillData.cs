@@ -21,4 +21,7 @@ public class SkillData : ScriptableObject
     [Header("투사체 (Projectile 타입만)")]
     public Projectile projectilePrefab;
     public float projectileSpeed = 8f;
+
+    [Header("피격 이펙트")]
+    public EffectAutoReturn hitEffectPrefab;
 }
