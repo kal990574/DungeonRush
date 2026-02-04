@@ -13,6 +13,13 @@ public class EnemyDeadState : IState
     {
         _enemy.AutoMove.Stop();
         _enemy.AnimHandler.PlayDeath();
+
+        var collider = _enemy.GetComponent<Collider2D>();
+        if (collider != null)
+        {
+            collider.enabled = false;
+        }
+
         Object.Destroy(_enemy.gameObject, 1f);
     }
 
