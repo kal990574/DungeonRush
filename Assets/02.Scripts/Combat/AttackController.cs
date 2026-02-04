@@ -7,8 +7,6 @@ public class AttackController : MonoBehaviour
     private float _attackCooldown;
     private float _lastAttackTime = -999f;
 
-    public float AttackRange => _attackRange;
-
     public void Initialize(float damage, float range, float cooldown)
     {
         _attackDamage = damage;
