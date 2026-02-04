@@ -144,7 +144,7 @@ GameObject:
   - component: {fileID: 3993625639285271010}
   - component: {fileID: 2489577752382592240}
   m_Layer: 5
-  m_Name: SPUM_20251223150052739
+  m_Name: EnemySPUM
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
