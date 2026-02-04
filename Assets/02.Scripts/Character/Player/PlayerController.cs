@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private CharacterStatData _statData;
+    [SerializeField] private PlayerStatData _statData;
 
     private StateMachine _stateMachine;
     private HealthComponent _health;
@@ -10,7 +10,7 @@ public class PlayerController : MonoBehaviour
     private CharacterFlip _flip;
     private TargetFinder _targetFinder;
     private AutoMoveController _autoMove;
-    private AttackController _attack;
+    private SkillExecutor _skillExecutor;
 
     private PlayerIdleState _idleState;
     private PlayerMoveState _moveState;
@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour
     public CharacterFlip Flip => _flip;
     public TargetFinder TargetFinder => _targetFinder;
     public AutoMoveController AutoMove => _autoMove;
-    public AttackController Attack => _attack;
+    public SkillExecutor SkillExecutor => _skillExecutor;
 
     public PlayerIdleState IdleState => _idleState;
     public PlayerMoveState MoveState => _moveState;
@@ -51,7 +51,7 @@ public class PlayerController : MonoBehaviour
         _flip = GetComponent<CharacterFlip>();
         _targetFinder = GetComponent<TargetFinder>();
         _autoMove = GetComponent<AutoMoveController>();
-        _attack = GetComponent<AttackController>();
+        _skillExecutor = GetComponent<SkillExecutor>();
     }
 
     private void InitializeStats()
@@ -59,7 +59,6 @@ public class PlayerController : MonoBehaviour
         _health.Initialize(_statData.maxHp);
         _targetFinder.Initialize(_statData.detectRange);
         _autoMove.Initialize(_statData.moveSpeed);
-        _attack.Initialize(_statData.attackDamage, _statData.attackRange, _statData.attackCooldown);
     }
 
     private void InitializeStateMachine()

@@ -24,7 +24,7 @@ public class PlayerAttackState : IState
             return;
         }
 
-        if (!_player.Attack.IsInRange(target))
+        if (!_player.SkillExecutor.IsInRange(target))
         {
             _player.StateMachine.ChangeState(_player.MoveState);
             return;
@@ -33,10 +33,10 @@ public class PlayerAttackState : IState
         Vector2 direction = (target.position - _player.transform.position).normalized;
         _player.Flip.FaceDirection(direction);
 
-        if (_player.Attack.CanAttack())
+        if (_player.SkillExecutor.CanExecute())
         {
             _player.AnimHandler.PlayAttack();
-            _player.Attack.TryAttack(target);
+            _player.SkillExecutor.TryExecute(target);
         }
     }
 

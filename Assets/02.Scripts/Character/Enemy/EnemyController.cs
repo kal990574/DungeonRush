@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    [SerializeField] private CharacterStatData _statData;
+    [SerializeField] private EnemyStatData _statData;
 
     private StateMachine _stateMachine;
     private HealthComponent _health;

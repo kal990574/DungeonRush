@@ -21,7 +21,7 @@ public class PlayerIdleState : IState
 
         if (target == null) return;
 
-        if (_player.Attack.IsInRange(target))
+        if (_player.SkillExecutor.IsInRange(target))
         {
             _player.StateMachine.ChangeState(_player.AttackState);
         }

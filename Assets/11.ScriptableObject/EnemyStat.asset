@@ -9,12 +9,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bc824a00844ee4c6f93b861ce5be4493, type: 3}
-  m_Name: EnemyStatData
-  m_EditorClassIdentifier: Assembly-CSharp::CharacterStatData
-  maxHp: 30
+  m_Script: {fileID: 11500000, guid: 5d8a83fb4439b4555a4184df10ed041b, type: 3}
+  m_Name: EnemyStat
+  m_EditorClassIdentifier: Assembly-CSharp::EnemyStatData
+  maxHp: 50
+  moveSpeed: 2
   attackDamage: 5
   attackRange: 1.5
-  attackCooldown: 1.5
-  moveSpeed: 1
-  detectRange: 0
+  attackCooldown: 1
