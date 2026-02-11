@@ -60,7 +60,7 @@ namespace DungeonRush.Debug
                 case 1:
                     card.cardName = "Attack Up";
                     card.description = "Attack +10";
-                    card.rarity = CardRarity.Uncommon;
+                    card.rarity = CardRarity.Legendary;
                     card.effectType = CardEffectType.StatBoost;
                     card.targetStat = StatType.Attack;
                     card.effectValue = 10f;
