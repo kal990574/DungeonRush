@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2594465024226372807}
   - component: {fileID: 7290221930240743633}
   - component: {fileID: 5389921122946683710}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: PlasmaBall_Blue
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -81,7 +81,7 @@ SpriteRenderer:
   m_GlobalIlluminationMeshLod: 0
   m_SortingLayerID: 0
   m_SortingLayer: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 10
   m_MaskInteraction: 0
   m_Sprite: {fileID: -4913982344839117222, guid: 51061a2eefc04406b8d46252edde9086, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}

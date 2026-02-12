@@ -378,7 +378,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c0646bfe7f8b44e888f299bbd663a8b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::SkillExecutor
-  _skillData: {fileID: 11400000, guid: d92c11ca7f7034f5b996ff2c493c9173, type: 2}
+  _skillData: {fileID: 11400000, guid: 6fd67530b0a8b4ae6985756321fe51d9, type: 2}
 --- !u!1 &1117702187
 GameObject:
   m_ObjectHideFlags: 0
