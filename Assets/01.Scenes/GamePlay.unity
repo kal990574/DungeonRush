@@ -366,7 +366,7 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6424791324080774269, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
   m_PrefabInstance: {fileID: 8636469186812734958}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &893262319
+--- !u!114 &893262329
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -375,10 +375,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 893262308}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2c0646bfe7f8b44e888f299bbd663a8b, type: 3}
+  m_Script: {fileID: 11500000, guid: 9d812c19fa6e14b0487c7793638ac12d, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SkillExecutor
-  _skillData: {fileID: 11400000, guid: 6fd67530b0a8b4ae6985756321fe51d9, type: 2}
+  m_EditorClassIdentifier: Assembly-CSharp::SkillSlotManager
+  _initialSkills:
+  - {fileID: 11400000, guid: 6fd67530b0a8b4ae6985756321fe51d9, type: 2}
+  - {fileID: 11400000, guid: b32a34c7b42734e95aab64fb75e6f206, type: 2}
+  - {fileID: 11400000, guid: d92c11ca7f7034f5b996ff2c493c9173, type: 2}
 --- !u!1 &1117702187
 GameObject:
   m_ObjectHideFlags: 0
@@ -930,7 +933,7 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 7458530068137299262, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 893262319}
+      addedObject: {fileID: 893262329}
   m_SourcePrefab: {fileID: 100100000, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:

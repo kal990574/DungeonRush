@@ -21,9 +21,12 @@ public class PlayerIdleState : IState
 
         if (target == null) return;
 
-        if (_player.SkillExecutor.IsInRange(target))
+        float distance = Vector2.Distance(_player.transform.position, target.position);
+        float shortestRange = _player.SkillSlotManager.GetShortestRange();
+
+        if (distance <= shortestRange)
         {
-            _player.StateMachine.ChangeState(_player.AttackState);
+            _player.StateMachine.ChangeState(_player.CombatState);
         }
         else
         {

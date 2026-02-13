@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: PlayerStat
   m_EditorClassIdentifier: Assembly-CSharp::PlayerStatData
   maxHp: 200
-  moveSpeed: 4
-  detectRange: 15
+  moveSpeed: 2
+  detectRange: 20

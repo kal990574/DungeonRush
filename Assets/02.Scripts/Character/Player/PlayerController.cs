@@ -10,11 +10,11 @@ public class PlayerController : MonoBehaviour
     private CharacterFlip _flip;
     private TargetFinder _targetFinder;
     private AutoMoveController _autoMove;
-    private SkillExecutor _skillExecutor;
+    private SkillSlotManager _skillSlotManager;
 
     private PlayerIdleState _idleState;
     private PlayerMoveState _moveState;
-    private PlayerAttackState _attackState;
+    private PlayerCombatState _combatState;
     private PlayerDeadState _deadState;
 
     public StateMachine StateMachine => _stateMachine;
@@ -22,11 +22,11 @@ public class PlayerController : MonoBehaviour
     public CharacterFlip Flip => _flip;
     public TargetFinder TargetFinder => _targetFinder;
     public AutoMoveController AutoMove => _autoMove;
-    public SkillExecutor SkillExecutor => _skillExecutor;
+    public SkillSlotManager SkillSlotManager => _skillSlotManager;
 
     public PlayerIdleState IdleState => _idleState;
     public PlayerMoveState MoveState => _moveState;
-    public PlayerAttackState AttackState => _attackState;
+    public PlayerCombatState CombatState => _combatState;
     public PlayerDeadState DeadState => _deadState;
 
     private void Start()
@@ -34,6 +34,7 @@ public class PlayerController : MonoBehaviour
         CacheComponents();
         InitializeStats();
         InitializeStateMachine();
+        InitializeSkills();
 
         _health.OnDied += HandleDeath;
         _stateMachine.ChangeState(_idleState);
@@ -42,6 +43,11 @@ public class PlayerController : MonoBehaviour
     private void Update()
     {
         _stateMachine.Execute();
+
+        if (_health.IsAlive)
+        {
+            _skillSlotManager.Tick(Time.deltaTime);
+        }
     }
 
     private void CacheComponents()
@@ -51,7 +57,7 @@ public class PlayerController : MonoBehaviour
         _flip = GetComponent<CharacterFlip>();
         _targetFinder = GetComponent<TargetFinder>();
         _autoMove = GetComponent<AutoMoveController>();
-        _skillExecutor = GetComponent<SkillExecutor>();
+        _skillSlotManager = GetComponent<SkillSlotManager>();
     }
 
     private void InitializeStats()
@@ -66,8 +72,16 @@ public class PlayerController : MonoBehaviour
         _stateMachine = new StateMachine();
         _idleState = new PlayerIdleState(this);
         _moveState = new PlayerMoveState(this);
-        _attackState = new PlayerAttackState(this);
+        _combatState = new PlayerCombatState(this);
         _deadState = new PlayerDeadState(this);
+    }
+
+    private void InitializeSkills()
+    {
+        _skillSlotManager.Initialize(
+            transform,
+            () => _targetFinder.FindNearestTarget()
+        );
     }
 
     private void HandleDeath()

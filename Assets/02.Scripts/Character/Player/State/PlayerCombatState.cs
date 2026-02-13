@@ -1,10 +1,11 @@
 using UnityEngine;
 
-public class PlayerAttackState : IState
+// 최소 사거리 이내에 적이 있을 때 정지, 스킬 발사는 SkillSlotManager
+public class PlayerCombatState : IState
 {
     private readonly PlayerController _player;
 
-    public PlayerAttackState(PlayerController player)
+    public PlayerCombatState(PlayerController player)
     {
         _player = player;
     }
@@ -12,6 +13,7 @@ public class PlayerAttackState : IState
     public void Enter()
     {
         _player.AutoMove.Stop();
+        _player.AnimHandler.PlayIdle();
     }
 
     public void Execute()
@@ -24,7 +26,10 @@ public class PlayerAttackState : IState
             return;
         }
 
-        if (!_player.SkillExecutor.IsInRange(target))
+        float distance = Vector2.Distance(_player.transform.position, target.position);
+        float shortestRange = _player.SkillSlotManager.GetShortestRange();
+
+        if (distance > shortestRange)
         {
             _player.StateMachine.ChangeState(_player.MoveState);
             return;
@@ -32,12 +37,6 @@ public class PlayerAttackState : IState
 
         Vector2 direction = (target.position - _player.transform.position).normalized;
         _player.Flip.FaceDirection(direction);
-
-        if (_player.SkillExecutor.CanExecute())
-        {
-            _player.AnimHandler.PlayAttack();
-            _player.SkillExecutor.TryExecute(target);
-        }
     }
 
     public void Exit() { }

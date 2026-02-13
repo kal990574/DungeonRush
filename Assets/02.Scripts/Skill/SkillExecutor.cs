@@ -1,85 +1,67 @@
 using UnityEngine;
 
-public class SkillExecutor : MonoBehaviour
+// 스킬 발사 로직만 담당, 쿨다운/사거리 판단 -> SkillSlot
+public class SkillExecutor
 {
-    [SerializeField] private SkillData _skillData;
-
-    private float _lastExecuteTime = -999f;
+    private readonly SkillData _data;
     private ProjectilePool _projectilePool;
     private EffectPool _effectPool;
 
-    public float AttackRange => _skillData.range;
-
-    private void Start()
+    public SkillExecutor(SkillData data)
     {
-        if (_skillData.skillType == SkillType.Projectile)
-        {
-            InitializeProjectilePool();
-        }
-
-        if (_skillData.hitEffectPrefab != null)
-        {
-            InitializeEffectPool();
-        }
+        _data = data;
+        InitializePools();
     }
 
-    public bool IsInRange(Transform target)
+    public void Execute(Transform owner, Transform target)
     {
-        return Vector2.Distance(transform.position, target.position) <= _skillData.range;
-    }
-
-    public bool CanExecute()
-    {
-        return Time.time >= _lastExecuteTime + _skillData.cooldown;
-    }
-
-    public bool TryExecute(Transform target)
-    {
-        if (!CanExecute() || !IsInRange(target)) return false;
-
-        _lastExecuteTime = Time.time;
-
-        switch (_skillData.skillType)
+        switch (_data.skillType)
         {
             case SkillType.Melee:
                 ExecuteMelee(target);
                 break;
             case SkillType.Projectile:
-                ExecuteProjectile(target);
+                ExecuteProjectile(owner, target);
                 break;
         }
-
-        return true;
     }
 
     private void ExecuteMelee(Transform target)
     {
         var damageable = target.GetComponent<IDamageable>();
-        if (damageable != null && damageable.IsAlive)
+        if (damageable == null || !damageable.IsAlive) return;
+
+        damageable.TakeDamage(_data.damage);
+
+        if (_effectPool != null)
         {
-            damageable.TakeDamage(_skillData.damage);
+            _effectPool.Play(target.position);
         }
     }
 
-    private void ExecuteProjectile(Transform target)
+    private void ExecuteProjectile(Transform owner, Transform target)
     {
         Projectile projectile = _projectilePool.Get();
-        projectile.transform.position = transform.position;
+        projectile.transform.position = owner.position;
         projectile.Initialize(
-            _skillData.damage, _skillData.projectileSpeed, target, _projectilePool, _effectPool);
+            _data.damage, _data.projectileSpeed, target,
+            _projectilePool, _effectPool);
     }
 
-    private void InitializeProjectilePool()
+    private void InitializePools()
     {
-        var poolObj = new GameObject($"Pool_{_skillData.skillName}");
-        _projectilePool = poolObj.AddComponent<ProjectilePool>();
-        _projectilePool.Initialize(_skillData.projectilePrefab);
-    }
+        if (_data.skillType == SkillType.Projectile && _data.projectilePrefab != null)
+        {
+            var poolObj = new GameObject($"Pool_{_data.skillName}");
+            _projectilePool = poolObj.AddComponent<ProjectilePool>();
+            _projectilePool.Initialize(_data.projectilePrefab);
+        }
 
-    private void InitializeEffectPool()
-    {
-        var poolObj = new GameObject($"EffectPool_{_skillData.skillName}");
-        _effectPool = poolObj.AddComponent<EffectPool>();
-        _effectPool.Initialize(_skillData.hitEffectPrefab);
+        if (_data.hitEffectPrefab != null)
+        {
+            var effectObj = new GameObject($"EffectPool_{_data.skillName}");
+            _effectPool = effectObj.AddComponent<EffectPool>();
+            _effectPool.Initialize(_data.hitEffectPrefab);
+        }
     }
 }
