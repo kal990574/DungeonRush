@@ -602,7 +602,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 5505069924244567843, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
       propertyPath: _initialSkills.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 5505069924244567843, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
       propertyPath: '_initialSkills.Array.data[0]'
@@ -615,11 +615,11 @@ PrefabInstance:
     - target: {fileID: 5505069924244567843, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
       propertyPath: '_initialSkills.Array.data[2]'
       value: 
-      objectReference: {fileID: 11400000, guid: 6fd67530b0a8b4ae6985756321fe51d9, type: 2}
+      objectReference: {fileID: 11400000, guid: 9c46496fbc70740a2852bc037602bee1, type: 2}
     - target: {fileID: 5505069924244567843, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
       propertyPath: '_initialSkills.Array.data[3]'
       value: 
-      objectReference: {fileID: 11400000, guid: 9c46496fbc70740a2852bc037602bee1, type: 2}
+      objectReference: {fileID: 11400000, guid: d92c11ca7f7034f5b996ff2c493c9173, type: 2}
     - target: {fileID: 5505069924244567843, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
       propertyPath: '_initialSkills.Array.data[4]'
       value: 
