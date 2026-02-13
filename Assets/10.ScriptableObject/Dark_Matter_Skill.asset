@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
   skillName: 
   skillType: 1
-  damage: 15
+  damage: 999999
   range: 10
   cooldown: 5
   projectilePrefab: {fileID: 7387382358196406845, guid: a5354e0cdfff74848b8be1710f79709c, type: 3}

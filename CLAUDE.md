@@ -739,6 +739,14 @@ namespace DungeonRush.Core.Pool { }
 | `ScoreResultUI.cs` | 게임오버 결과 화면 |
 | `RankingUI.cs` | 랭킹 표시 |
 
+### 데미지 플로팅 시스템 (`02.Scripts/DamageFloating/`)
+| 스크립트 | 설명 |
+|----------|------|
+| `DamagePopup.cs` | 개별 플로팅 텍스트 (DOTween 애니메이션 + 풀 반환) |
+| `DamagePopupSpawner.cs` | 풀링 관리 + 정적 Spawn 인터페이스 |
+| `DamagePopupReceiver.cs` | HealthComponent.OnDamaged ↔ DamagePopupSpawner 연결 |
+| `DamagePopupSettings.cs` | ScriptableObject 설정 (`02.Scripts/Data/`) |
+
 ---
 
 ## 4. 데이터 설계
@@ -939,6 +947,7 @@ public class ExampleScript : MonoBehaviour
 - [ ] 적 오브젝트 풀링 (Destroy → EnemyPool 전환)
 - [ ] 적 외형 다양화 (SPUM 기반 다종 프리팹)
 - [ ] 플레이어 캐릭터 외형 구현 (SPUM)
+- [ ] 데미지 플로팅 시스템 (DamagePopup, DamagePopupSpawner, DamagePopupReceiver)
 
 ### Phase 3: 스킬 다양화 (빌드 깊이)
 - [ ] 스킬 발사 패턴 다양화 (오라형/궤도형/장판형/전방위형)

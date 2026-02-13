@@ -11,6 +11,7 @@ public class HealthComponent : MonoBehaviour, IDamageable
     public float MaxHp => _maxHp;
 
     public event Action OnDied;
+    public event Action<float> OnDamaged;
 
     public void Initialize(float maxHp)
     {
@@ -23,6 +24,7 @@ public class HealthComponent : MonoBehaviour, IDamageable
         if (!IsAlive) return;
 
         _currentHp -= damage;
+        OnDamaged?.Invoke(damage);
 
         if (_currentHp <= 0)
         {
