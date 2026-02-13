@@ -13,7 +13,7 @@ public class PlayerCombatState : IState
     public void Enter()
     {
         _player.AutoMove.Stop();
-        _player.AnimHandler.PlayIdle();
+        _player.AnimHandler.PlayAttack();
     }
 
     public void Execute()

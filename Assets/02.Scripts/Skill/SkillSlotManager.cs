@@ -12,13 +12,15 @@ public class SkillSlotManager : MonoBehaviour
     private readonly List<SkillSlot> _slots = new();
     private Transform _owner;
     private Func<Transform> _targetProvider;
+    private Func<Transform, Transform> _retargetFunc;
 
     public int SlotCount => _slots.Count;
 
-    public void Initialize(Transform owner, Func<Transform> targetProvider)
+    public void Initialize(Transform owner, Func<Transform> targetProvider, Func<Transform, Transform> retargetFunc)
     {
         _owner = owner;
         _targetProvider = targetProvider;
+        _retargetFunc = retargetFunc;
 
         foreach (SkillData data in _initialSkills)
         {
@@ -33,7 +35,7 @@ public class SkillSlotManager : MonoBehaviour
     {
         if (_slots.Count >= MaxSlots) return false;
 
-        var executor = new SkillExecutor(data);
+        var executor = new SkillExecutor(data, _retargetFunc);
         _slots.Add(new SkillSlot(data, executor));
         return true;
     }

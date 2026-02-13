@@ -517,7 +517,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 811ea33c87a204af09158abd281af239, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
-  _enemyPrefab: {fileID: 8074607063105137054, guid: 3ce315aa9cf2943e18aad9f339c5af65, type: 3}
+  _enemyPrefab: {fileID: 4973746577108188175, guid: 3ce315aa9cf2943e18aad9f339c5af65, type: 3}
   _arenaBoundary: {fileID: 1993253237}
   _spawnInterval: 1
   _maxEnemies: 30

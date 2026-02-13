@@ -6,12 +6,14 @@ using UnityEngine.Pool;
 public class SkillExecutor
 {
     private readonly SkillData _data;
+    private readonly Func<Transform, Transform> _retargetFunc;
     private IObjectPool<Projectile> _projectilePool;
     private IObjectPool<EffectAutoReturn> _effectPool;
 
-    public SkillExecutor(SkillData data)
+    public SkillExecutor(SkillData data, Func<Transform, Transform> retargetFunc)
     {
         _data = data;
+        _retargetFunc = retargetFunc;
         InitializePools();
     }
 
@@ -43,7 +45,7 @@ public class SkillExecutor
         projectile.transform.position = owner.position;
         projectile.Initialize(
             _data.damage, _data.projectileSpeed, target,
-            _projectilePool, PlayEffect);
+            _projectilePool, PlayEffect, _retargetFunc);
     }
 
     private void PlayEffect(Vector3 position)

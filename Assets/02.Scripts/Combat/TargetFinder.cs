@@ -22,8 +22,13 @@ public class TargetFinder : MonoBehaviour
 
     public Transform FindNearestTarget()
     {
+        return FindNearestFrom(transform.position);
+    }
+
+    public Transform FindNearestFrom(Vector2 position)
+    {
         int count = Physics2D.OverlapCircle(
-            transform.position, _detectRange, _contactFilter, _results);
+            position, _detectRange, _contactFilter, _results);
 
         if (count == 0) return null;
 
@@ -32,8 +37,10 @@ public class TargetFinder : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            float distance = Vector2.Distance(
-                transform.position, _results[i].transform.position);
+            var damageable = _results[i].GetComponent<IDamageable>();
+            if (damageable == null || !damageable.IsAlive) continue;
+
+            float distance = Vector2.Distance(position, _results[i].transform.position);
 
             if (distance < minDistance)
             {
