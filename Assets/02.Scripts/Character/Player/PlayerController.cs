@@ -80,8 +80,7 @@ public class PlayerController : MonoBehaviour
     {
         _skillSlotManager.Initialize(
             transform,
-            () => _targetFinder.FindNearestTarget(),
-            projectile => _targetFinder.FindNearestFrom(projectile.position)
+            () => _targetFinder.FindNearestTarget()
         );
     }
 
