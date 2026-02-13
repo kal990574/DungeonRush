@@ -10,13 +10,13 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ccef001ad2b204a0280d464f4c8d3b11, type: 3}
-  m_Name: PlasmaBall_Blue_Skill
+  m_Name: Magic_Missile_Skill
   m_EditorClassIdentifier: Assembly-CSharp::SkillData
   skillName: 
   skillType: 1
-  damage: 2316
-  range: 8
-  cooldown: 3
-  projectilePrefab: {fileID: 5389921122946683710, guid: ffe53445188af4e478fc7202b6a939ad, type: 3}
-  projectileSpeed: 6
-  hitEffectPrefab: {fileID: 1040071015206822655, guid: 167a7ef3562e649f08d09535787187d8, type: 3}
+  damage: 412
+  range: 4
+  cooldown: 1.5
+  projectilePrefab: {fileID: 7034931605620515235, guid: a488d97d69c304af5a5c88afb7a743a4, type: 3}
+  projectileSpeed: 8
+  hitEffectPrefab: {fileID: 240289744832022921, guid: 7b5f6485d7e3d4f63a0a2d06f62997ba, type: 3}

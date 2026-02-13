@@ -600,6 +600,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 5505069924244567843, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
+      propertyPath: '_initialSkills.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 9c46496fbc70740a2852bc037602bee1, type: 2}
+    - target: {fileID: 5505069924244567843, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
+      propertyPath: '_initialSkills.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: eda0f2753a46647f6902e98c8f32997a, type: 2}
     - target: {fileID: 6424791324080774269, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
