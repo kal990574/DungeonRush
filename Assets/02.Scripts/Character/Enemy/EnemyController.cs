@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 
 public class EnemyController : MonoBehaviour
@@ -10,32 +11,54 @@ public class EnemyController : MonoBehaviour
     private CharacterFlip _flip;
     private AutoMoveController _autoMove;
     private AttackController _attack;
+    private Collider2D _collider;
     private Transform _playerTarget;
 
     private EnemyChaseState _chaseState;
     private EnemyAttackState _attackState;
     private EnemyDeadState _deadState;
 
+    public Action<EnemyController> OnReturnRequested;
+
     public StateMachine StateMachine => _stateMachine;
     public SPUMAnimationHandler AnimHandler => _animHandler;
     public CharacterFlip Flip => _flip;
     public AutoMoveController AutoMove => _autoMove;
     public AttackController Attack => _attack;
+    public Collider2D Collider => _collider;
     public Transform PlayerTarget => _playerTarget;
 
     public EnemyChaseState ChaseState => _chaseState;
     public EnemyAttackState AttackState => _attackState;
     public EnemyDeadState DeadState => _deadState;
 
-    private void Start()
+    private void Awake()
     {
         CacheComponents();
-        InitializeStats();
-        FindPlayer();
         InitializeStateMachine();
-
+        FindPlayer();
         _health.OnDied += HandleDeath;
+    }
+
+    public void Activate(Vector3 position)
+    {
+        transform.position = position;
+        InitializeStats();
+        _attack.ResetCooldown();
+        _flip.ResetDirection();
+        _collider.enabled = true;
         _stateMachine.ChangeState(_chaseState);
+    }
+
+    public void Deactivate()
+    {
+        _autoMove.Stop();
+    }
+
+    public void ReturnToPool()
+    {
+        Deactivate();
+        OnReturnRequested?.Invoke(this);
     }
 
     private void Update()
@@ -50,6 +73,7 @@ public class EnemyController : MonoBehaviour
         _flip = GetComponent<CharacterFlip>();
         _autoMove = GetComponent<AutoMoveController>();
         _attack = GetComponent<AttackController>();
+        _collider = GetComponent<Collider2D>();
     }
 
     private void InitializeStats()

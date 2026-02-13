@@ -3,6 +3,9 @@ using UnityEngine;
 public class EnemyDeadState : IState
 {
     private readonly EnemyController _enemy;
+    private float _deathTimer;
+    private bool _returned;
+    private const float DeathDelay = 1f;
 
     public EnemyDeadState(EnemyController enemy)
     {
@@ -11,19 +14,29 @@ public class EnemyDeadState : IState
 
     public void Enter()
     {
+        _deathTimer = 0f;
+        _returned = false;
         _enemy.AutoMove.Stop();
         _enemy.AnimHandler.PlayDeath();
-
-        var collider = _enemy.GetComponent<Collider2D>();
-        if (collider != null)
-        {
-            collider.enabled = false;
-        }
-
-        Object.Destroy(_enemy.gameObject, 1f);
+        _enemy.Collider.enabled = false;
     }
 
-    public void Execute() { }
+    public void Execute()
+    {
+        if (_returned) return;
 
-    public void Exit() { }
+        _deathTimer += Time.deltaTime;
+
+        if (_deathTimer >= DeathDelay)
+        {
+            _returned = true;
+            _enemy.ReturnToPool();
+        }
+    }
+
+    public void Exit()
+    {
+        _deathTimer = 0f;
+        _returned = false;
+    }
 }

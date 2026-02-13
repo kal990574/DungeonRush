@@ -18,6 +18,14 @@ public class CharacterFlip : MonoBehaviour
         }
     }
 
+    public void ResetDirection()
+    {
+        if (!_facingRight)
+        {
+            Flip();
+        }
+    }
+
     private void Flip()
     {
         _facingRight = !_facingRight;

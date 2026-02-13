@@ -5,8 +5,6 @@ public class ArenaBoundary : MonoBehaviour
     [SerializeField] private Vector2 _arenaSize = new Vector2(20f, 12f);
     [SerializeField] private float _wallThickness = 1f;
 
-    public Vector2 ArenaSize => _arenaSize;
-
     private void Awake()
     {
         CreateWalls();

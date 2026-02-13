@@ -24,6 +24,11 @@ public class AttackController : MonoBehaviour
         return Time.time >= _lastAttackTime + _attackCooldown;
     }
 
+    public void ResetCooldown()
+    {
+        _lastAttackTime = -999f;
+    }
+
     public bool TryAttack(Transform target)
     {
         if (!CanAttack() || !IsInRange(target)) return false;

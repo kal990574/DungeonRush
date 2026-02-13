@@ -6,16 +6,24 @@ public class TargetFinder : MonoBehaviour
     [SerializeField] private LayerMask _targetLayer;
 
     private readonly Collider2D[] _results = new Collider2D[20];
+    private ContactFilter2D _contactFilter;
 
     public void Initialize(float detectRange)
     {
         _detectRange = detectRange;
     }
 
+    private void Awake()
+    {
+        _contactFilter = new ContactFilter2D();
+        _contactFilter.SetLayerMask(_targetLayer);
+        _contactFilter.useLayerMask = true;
+    }
+
     public Transform FindNearestTarget()
     {
-        int count = Physics2D.OverlapCircleNonAlloc(
-            transform.position, _detectRange, _results, _targetLayer);
+        int count = Physics2D.OverlapCircle(
+            transform.position, _detectRange, _contactFilter, _results);
 
         if (count == 0) return null;
 

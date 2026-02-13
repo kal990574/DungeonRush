@@ -1,4 +1,6 @@
+using System;
 using UnityEngine;
+using UnityEngine.Pool;
 
 public class Projectile : MonoBehaviour
 {
@@ -6,20 +8,20 @@ public class Projectile : MonoBehaviour
     private float _speed;
     private Transform _target;
     private IDamageable _targetDamageable;
-    private ProjectilePool _pool;
-    private EffectPool _effectPool;
+    private IObjectPool<Projectile> _pool;
+    private Action<Vector3> _onHitEffect;
     private float _spawnTime;
     private const float Lifetime = 5f;
     private const float HitDistance = 0.2f;
 
-    public void Initialize(float damage, float speed, Transform target, ProjectilePool pool, EffectPool effectPool)
+    public void Initialize(float damage, float speed, Transform target, IObjectPool<Projectile> pool, Action<Vector3> onHitEffect)
     {
         _damage = damage;
         _speed = speed;
         _target = target;
         _targetDamageable = target.GetComponent<IDamageable>();
         _pool = pool;
-        _effectPool = effectPool;
+        _onHitEffect = onHitEffect;
         _spawnTime = Time.time;
     }
 
@@ -27,7 +29,7 @@ public class Projectile : MonoBehaviour
     {
         if (_target == null || !_targetDamageable.IsAlive || IsExpired())
         {
-            _pool.Return(this);
+            _pool.Release(this);
             return;
         }
 
@@ -36,8 +38,8 @@ public class Projectile : MonoBehaviour
         if (HasReachedTarget())
         {
             _targetDamageable.TakeDamage(_damage);
-            _effectPool?.Play(transform.position);
-            _pool.Return(this);
+            _onHitEffect?.Invoke(transform.position);
+            _pool.Release(this);
         }
     }
 
