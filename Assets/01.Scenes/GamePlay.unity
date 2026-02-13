@@ -544,7 +544,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::EnemySpawner
   _enemyPrefab: {fileID: 4973746577108188175, guid: 3ce315aa9cf2943e18aad9f339c5af65, type: 3}
   _arenaBoundary: {fileID: 1993253237}
-  _spawnInterval: 1.5
+  _spawnInterval: 1
   _maxEnemies: 30
 --- !u!1 &1993253235
 GameObject:
@@ -601,13 +601,29 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: 5505069924244567843, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
+      propertyPath: _initialSkills.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 5505069924244567843, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
       propertyPath: '_initialSkills.Array.data[0]'
       value: 
-      objectReference: {fileID: 11400000, guid: 9c46496fbc70740a2852bc037602bee1, type: 2}
+      objectReference: {fileID: 11400000, guid: eda0f2753a46647f6902e98c8f32997a, type: 2}
     - target: {fileID: 5505069924244567843, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
       propertyPath: '_initialSkills.Array.data[1]'
       value: 
-      objectReference: {fileID: 11400000, guid: eda0f2753a46647f6902e98c8f32997a, type: 2}
+      objectReference: {fileID: 11400000, guid: 61db9261e4f1845248cb982dcf17ada0, type: 2}
+    - target: {fileID: 5505069924244567843, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
+      propertyPath: '_initialSkills.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 6fd67530b0a8b4ae6985756321fe51d9, type: 2}
+    - target: {fileID: 5505069924244567843, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
+      propertyPath: '_initialSkills.Array.data[3]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 9c46496fbc70740a2852bc037602bee1, type: 2}
+    - target: {fileID: 5505069924244567843, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
+      propertyPath: '_initialSkills.Array.data[4]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 6fd67530b0a8b4ae6985756321fe51d9, type: 2}
     - target: {fileID: 6424791324080774269, guid: 29b05dd82c3da431ca7aaaa60e6caa0d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

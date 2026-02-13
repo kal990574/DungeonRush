@@ -16,7 +16,7 @@ MonoBehaviour:
   skillType: 1
   damage: 999999
   range: 10
-  cooldown: 5
+  cooldown: 10
   projectilePrefab: {fileID: 7387382358196406845, guid: a5354e0cdfff74848b8be1710f79709c, type: 3}
   projectileSpeed: 4
   hitEffectPrefab: {fileID: 2467820736362996204, guid: 99eb14f5988ed48d2a535abe0d64c413, type: 3}

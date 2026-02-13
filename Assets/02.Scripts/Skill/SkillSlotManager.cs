@@ -5,7 +5,7 @@ using UnityEngine;
 // 플레이어의 스킬 슬롯 3개를 관리, FSM과 독립적으로 자동 발사
 public class SkillSlotManager : MonoBehaviour
 {
-    private const int MaxSlots = 3;
+    private const int MaxSlots = 5;
 
     [SerializeField] private SkillData[] _initialSkills;
 
