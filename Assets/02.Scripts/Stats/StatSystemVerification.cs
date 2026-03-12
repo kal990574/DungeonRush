@@ -1,9 +1,7 @@
 using UnityEngine;
-using DungeonRush.Stats.Config;
 using DungeonRush.Stats.Data;
 using DungeonRush.Stats.Data.SO;
 using DungeonRush.Stats.Repository;
-using DungeonRush.Stats.Repository.Csv;
 using DungeonRush.Stats.Repository.SO;
 using DungeonRush.Stats.Runtime;
 
@@ -13,7 +11,7 @@ namespace DungeonRush.Stats
     // 빈 GameObject에 붙여서 Play하면 Console에 결과 출력.
     public class StatSystemVerification : MonoBehaviour
     {
-        [Header("SO 기반 로드 (할당 시 SO 사용, 미할당 시 CSV 폴백)")]
+        [Header("SO 기반 로드 (필수 할당)")]
         [SerializeField] private StatDatabaseSO _statDatabase;
 
         private int _pass;
@@ -113,43 +111,19 @@ namespace DungeonRush.Stats
             runState.EndRun();
             Assert("런 종료", !runState.IsRunning);
 
-            string source = _statDatabase != null ? "SO" : "CSV";
-            Debug.Log($"[StatSystem] 검증 완료 ({source}): {_pass} PASS, {_fail} FAIL");
+            Debug.Log($"[StatSystem] 검증 완료 (SO): {_pass} PASS, {_fail} FAIL");
         }
 
         private GameData CreateGameData()
         {
-            ICharacterRepository charRepo;
-            ISkillRepository skillRepo;
-
-            if (_statDatabase != null)
+            if (_statDatabase == null)
             {
-                // SO 기반 로드.
-                charRepo = new SoCharacterRepository(_statDatabase.Characters);
-                skillRepo = new SoSkillRepository(_statDatabase.Skills);
-                Debug.Log("[StatSystem] SO 기반으로 데이터 로드.");
+                Debug.LogError("[StatSystem] StatDatabaseSO가 할당되지 않았습니다. Inspector에서 할당하세요.");
+                return null;
             }
-            else
-            {
-                // CSV 폴백.
-                var charCsv = Resources.Load<TextAsset>(StatConfig.CharacterCsvPath);
-                var skillCsv = Resources.Load<TextAsset>(StatConfig.SkillCsvPath);
-                var levelUpCsv = Resources.Load<TextAsset>(StatConfig.SkillLevelUpCsvPath);
 
-                Assert("CSV 로드 - Characters", charCsv != null);
-                Assert("CSV 로드 - Skills", skillCsv != null);
-                Assert("CSV 로드 - SkillLevelUps", levelUpCsv != null);
-
-                if (charCsv == null || skillCsv == null || levelUpCsv == null)
-                {
-                    Debug.LogError("[StatSystem] CSV 파일 누락. 검증 중단.");
-                    return null;
-                }
-
-                charRepo = new CsvCharacterRepository(charCsv.text);
-                skillRepo = new CsvSkillRepository(skillCsv.text, levelUpCsv.text);
-                Debug.Log("[StatSystem] CSV 기반으로 데이터 로드 (SO 미할당).");
-            }
+            ICharacterRepository charRepo = new SoCharacterRepository(_statDatabase.Characters);
+            ISkillRepository skillRepo = new SoSkillRepository(_statDatabase.Skills);
 
             return new GameData(charRepo, skillRepo);
         }

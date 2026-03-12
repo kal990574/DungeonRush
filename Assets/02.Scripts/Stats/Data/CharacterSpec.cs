@@ -12,6 +12,8 @@ namespace DungeonRush.Stats.Data
         public string WeaponTypeTag;
         public string CharacterTraitId;
 
+        public CharacterSpec() { }
+
         public CharacterSpec(
             string id,
             string name,

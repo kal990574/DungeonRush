@@ -1,9 +1,10 @@
+#if UNITY_EDITOR
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 
-namespace DungeonRush.Stats.Repository.Csv
+namespace DungeonRush.Stats.Editor
 {
     public static class CsvParser
     {
@@ -223,20 +224,26 @@ namespace DungeonRush.Stats.Repository.Csv
             return result.ToArray();
         }
 
-        // 필수 컬럼 검증. 누락 시 경고 로그 반환.
-        public static bool ValidateRequiredColumns(string[] headers, string context, params string[] required)
+        // 이름 또는 숫자 문자열을 enum으로 변환.
+        public static T ParseEnum<T>(string value, T defaultValue = default) where T : struct, Enum
         {
-            bool allFound = true;
-            foreach (string name in required)
+            if (string.IsNullOrEmpty(value))
             {
-                if (FindColumn(headers, name) < 0)
-                {
-                    UnityEngine.Debug.LogWarning($"[CsvParser] {context}: 필수 컬럼 '{name}' 누락.");
-                    allFound = false;
-                }
+                return defaultValue;
             }
 
-            return allFound;
+            if (Enum.TryParse(value, true, out T result))
+            {
+                return result;
+            }
+
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int intVal))
+            {
+                return (T)Enum.ToObject(typeof(T), intVal);
+            }
+
+            return defaultValue;
         }
     }
 }
+#endif
