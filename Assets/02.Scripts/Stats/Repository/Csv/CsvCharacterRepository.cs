@@ -1,6 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.Globalization;
 using DungeonRush.Stats.Data;
 
 namespace DungeonRush.Stats.Repository.Csv
@@ -20,32 +18,34 @@ namespace DungeonRush.Stats.Repository.Csv
 
             string[] headers = rows[0];
 
-            int idxId = FindColumn(headers, "PlayerID");
-            int idxName = FindColumn(headers, "PlayerName");
-            int idxGrade = FindColumn(headers, "Grade");
-            int idxModel = FindColumn(headers, "PlayerModelPrefab");
-            int idxActiveSkill = FindColumn(headers, "StartActiveSkillID");
-            int idxPassiveSkill = FindColumn(headers, "StartPassiveSkillID");
-            int idxWeaponTag = FindColumn(headers, "WeaponTypeTag");
-            int idxTrait = FindColumn(headers, "CharacterTraitID");
+            CsvParser.ValidateRequiredColumns(headers, "Character", "PlayerID", "PlayerName");
+
+            int idxId = CsvParser.FindColumn(headers, "PlayerID");
+            int idxName = CsvParser.FindColumn(headers, "PlayerName");
+            int idxGrade = CsvParser.FindColumn(headers, "Grade");
+            int idxModel = CsvParser.FindColumn(headers, "PlayerModelPrefab");
+            int idxActiveSkill = CsvParser.FindColumn(headers, "StartActiveSkillID");
+            int idxPassiveSkill = CsvParser.FindColumn(headers, "StartPassiveSkillID");
+            int idxWeaponTag = CsvParser.FindColumn(headers, "WeaponTypeTag");
+            int idxTrait = CsvParser.FindColumn(headers, "CharacterTraitID");
 
             for (int r = 1; r < rows.Count; r++)
             {
                 string[] cols = rows[r];
 
-                string id = GetField(cols, idxId);
+                string id = CsvParser.GetField(cols, idxId);
                 if (string.IsNullOrEmpty(id))
                 {
                     continue;
                 }
 
-                string name = GetField(cols, idxName);
-                int grade = ParseInt(GetField(cols, idxGrade), 0);
-                string modelPrefab = GetField(cols, idxModel);
-                string activeSkill = GetField(cols, idxActiveSkill);
-                string passiveSkill = GetField(cols, idxPassiveSkill);
-                string weaponTag = GetField(cols, idxWeaponTag);
-                string traitId = GetField(cols, idxTrait);
+                string name = CsvParser.GetField(cols, idxName);
+                int grade = CsvParser.ParseInt(CsvParser.GetField(cols, idxGrade));
+                string modelPrefab = CsvParser.GetField(cols, idxModel);
+                string activeSkill = CsvParser.GetField(cols, idxActiveSkill);
+                string passiveSkill = CsvParser.GetField(cols, idxPassiveSkill);
+                string weaponTag = CsvParser.GetField(cols, idxWeaponTag);
+                string traitId = CsvParser.GetField(cols, idxTrait);
 
                 var stats = new BaseStats();
                 for (int c = 0; c < headers.Length && c < cols.Length; c++)
@@ -58,21 +58,20 @@ namespace DungeonRush.Stats.Repository.Csv
                         continue;
                     }
 
-                    if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float parsed))
+                    float parsed = CsvParser.ParseFloat(value);
+                    if (parsed == 0f && value != "0")
                     {
-                        // Base 접두사 strip. (예: BaseATK → ATK)
-                        string statKey = header.StartsWith("Base", StringComparison.Ordinal)
-                            ? header.Substring(4)
-                            : header;
+                        continue;
+                    }
 
-                        try
-                        {
-                            stats.SetValue(statKey, parsed);
-                        }
-                        catch (ArgumentException)
-                        {
-                            // 스탯 키가 아닌 컬럼은 무시.
-                        }
+                    // Base 접두사 strip. (예: BaseATK → ATK)
+                    string statKey = header.StartsWith("Base", System.StringComparison.Ordinal)
+                        ? header.Substring(4)
+                        : header;
+
+                    if (stats.HasKey(statKey))
+                    {
+                        stats.SetValue(statKey, parsed);
                     }
                 }
 
@@ -92,39 +91,6 @@ namespace DungeonRush.Stats.Repository.Csv
         public IReadOnlyList<CharacterSpec> GetAll()
         {
             return _allCharacters;
-        }
-
-        private static int FindColumn(string[] headers, string name)
-        {
-            for (int i = 0; i < headers.Length; i++)
-            {
-                if (headers[i].Trim().Equals(name, StringComparison.OrdinalIgnoreCase))
-                {
-                    return i;
-                }
-            }
-
-            return -1;
-        }
-
-        private static string GetField(string[] cols, int index)
-        {
-            if (index >= 0 && index < cols.Length)
-            {
-                return cols[index].Trim();
-            }
-
-            return string.Empty;
-        }
-
-        private static int ParseInt(string value, int defaultValue)
-        {
-            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result))
-            {
-                return result;
-            }
-
-            return defaultValue;
         }
     }
 }

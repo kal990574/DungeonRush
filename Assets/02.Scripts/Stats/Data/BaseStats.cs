@@ -1,32 +1,12 @@
 using System;
+using System.Collections.Generic;
 
 namespace DungeonRush.Stats.Data
 {
     [Serializable]
     public class BaseStats
     {
-        // 공격.
-        public float ATK;
-        public float CDR;
-        public float CritRate;
-        public float CritDamage;
-
-        // 방어.
-        public float HP;
-        public float HPRegen;
-        public float Armor;
-        public float Evasion;
-
-        // 유틸/파밍.
-        public float MoveSpeed;
-        public float PickupRange;
-        public float ExpGain;
-        public float GoldGain;
-        public float Luck;
-
-        // 특수.
-        public float Lifesteal;
-        public float Thorns;
+        private readonly Dictionary<string, float> _values = new();
 
         public static readonly string[] AllKeys =
         {
@@ -36,55 +16,53 @@ namespace DungeonRush.Stats.Data
             "Lifesteal", "Thorns"
         };
 
+        // 공격.
+        public float ATK { get => GetValue("ATK"); set => SetValue("ATK", value); }
+        public float CDR { get => GetValue("CDR"); set => SetValue("CDR", value); }
+        public float CritRate { get => GetValue("CritRate"); set => SetValue("CritRate", value); }
+        public float CritDamage { get => GetValue("CritDamage"); set => SetValue("CritDamage", value); }
+
+        // 방어.
+        public float HP { get => GetValue("HP"); set => SetValue("HP", value); }
+        public float HPRegen { get => GetValue("HPRegen"); set => SetValue("HPRegen", value); }
+        public float Armor { get => GetValue("Armor"); set => SetValue("Armor", value); }
+        public float Evasion { get => GetValue("Evasion"); set => SetValue("Evasion", value); }
+
+        // 유틸/파밍.
+        public float MoveSpeed { get => GetValue("MoveSpeed"); set => SetValue("MoveSpeed", value); }
+        public float PickupRange { get => GetValue("PickupRange"); set => SetValue("PickupRange", value); }
+        public float ExpGain { get => GetValue("ExpGain"); set => SetValue("ExpGain", value); }
+        public float GoldGain { get => GetValue("GoldGain"); set => SetValue("GoldGain", value); }
+        public float Luck { get => GetValue("Luck"); set => SetValue("Luck", value); }
+
+        // 특수.
+        public float Lifesteal { get => GetValue("Lifesteal"); set => SetValue("Lifesteal", value); }
+        public float Thorns { get => GetValue("Thorns"); set => SetValue("Thorns", value); }
+
         public float GetValue(string key)
         {
-            return key switch
-            {
-                "ATK" => ATK,
-                "CDR" => CDR,
-                "CritRate" => CritRate,
-                "CritDamage" => CritDamage,
-                "HP" => HP,
-                "HPRegen" => HPRegen,
-                "Armor" => Armor,
-                "Evasion" => Evasion,
-                "MoveSpeed" => MoveSpeed,
-                "PickupRange" => PickupRange,
-                "ExpGain" => ExpGain,
-                "GoldGain" => GoldGain,
-                "Luck" => Luck,
-                "Lifesteal" => Lifesteal,
-                "Thorns" => Thorns,
-                _ => throw new ArgumentException($"Unknown stat key: {key}")
-            };
+            return _values.TryGetValue(key, out float v) ? v : 0f;
         }
 
         public void SetValue(string key, float value)
         {
-            switch (key)
-            {
-                case "ATK": ATK = value; break;
-                case "CDR": CDR = value; break;
-                case "CritRate": CritRate = value; break;
-                case "CritDamage": CritDamage = value; break;
-                case "HP": HP = value; break;
-                case "HPRegen": HPRegen = value; break;
-                case "Armor": Armor = value; break;
-                case "Evasion": Evasion = value; break;
-                case "MoveSpeed": MoveSpeed = value; break;
-                case "PickupRange": PickupRange = value; break;
-                case "ExpGain": ExpGain = value; break;
-                case "GoldGain": GoldGain = value; break;
-                case "Luck": Luck = value; break;
-                case "Lifesteal": Lifesteal = value; break;
-                case "Thorns": Thorns = value; break;
-                default: throw new ArgumentException($"Unknown stat key: {key}");
-            }
+            _values[key] = value;
+        }
+
+        public bool HasKey(string key)
+        {
+            return Array.IndexOf(AllKeys, key) >= 0;
         }
 
         public BaseStats Clone()
         {
-            return (BaseStats)MemberwiseClone();
+            var clone = new BaseStats();
+            foreach (var kvp in _values)
+            {
+                clone._values[kvp.Key] = kvp.Value;
+            }
+
+            return clone;
         }
     }
 }

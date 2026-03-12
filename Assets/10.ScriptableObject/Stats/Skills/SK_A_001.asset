@@ -1,0 +1,113 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ab8733e747d34d45b8fc7a9288a0401, type: 3}
+  m_Name: SK_A_001
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonRush.Stats.Data.SO.SkillSpecSO
+  _id: SK_A_001
+  _skillName: "\uD30C\uC774\uC5B4\uBCFC"
+  eSkillType: 0
+  _subType: Projectile
+  _maxLevel: 5
+  _skillGroup: 0
+  _grade: Common
+  _rate: 1
+  _linkedEffectGroupIds: []
+  _descKey: SKILL_DESC_FIREBALL
+  _iconPath: Icons/Skill/fireball
+  _prefabPath: Prefabs/Skill/Fireball
+  _castVFXPath: VFX/Cast_Fire
+  _hitVFXPath: VFX/Hit_Fire
+  _sfxPath: SFX/fireball
+  _weaponTagReq: 
+  _attackData:
+    SkillCoef: 1.2
+    BaseCoolTime: 1.5
+    CritEnabled: 1
+    LifestealEnabled: 1
+    BaseRange: 5
+    BaseRadius: 1
+    BaseKnockback: 1
+    PierceCount: 0
+    ChainCount: 0
+    BounceCount: 0
+    BaseProj: 1
+    BaseProjSpeed: 10
+    FirePattern: Single
+    BaseDuration: 0
+    TickInterval: 0
+    TickCoef: 0
+    MaxStack: 1
+    StackRule: 0
+  _passiveData:
+    PassiveEffectType: 
+    TargetStat: 
+    ModifyType: 
+    ModifyValue: 0
+    ApplyScope: 
+    ApplySkillTag: 
+    ApplySkillID: 
+    TriggerType: 
+    TriggerChance: 0
+    TriggerCoolTime: 0
+    BuffDuration: 0
+    StackLimit: 0
+    PassivePrefabPath: 
+  _levelUpEntries:
+  - SkillLevel: 2
+    ParamName: SkillCoef
+    ValueType: 1
+    ParamValue: 0.15
+    ConditionType: 
+    ConditionValue: 
+    UITextKey: 
+  - SkillLevel: 2
+    ParamName: BaseCoolTime
+    ValueType: 1
+    ParamValue: -0.1
+    ConditionType: 
+    ConditionValue: 
+    UITextKey: 
+  - SkillLevel: 3
+    ParamName: SkillCoef
+    ValueType: 1
+    ParamValue: 0.2
+    ConditionType: 
+    ConditionValue: 
+    UITextKey: 
+  - SkillLevel: 3
+    ParamName: BaseProj
+    ValueType: 1
+    ParamValue: 1
+    ConditionType: 
+    ConditionValue: 
+    UITextKey: 
+  - SkillLevel: 4
+    ParamName: SkillCoef
+    ValueType: 2
+    ParamValue: 0.1
+    ConditionType: 
+    ConditionValue: 
+    UITextKey: 
+  - SkillLevel: 5
+    ParamName: SkillCoef
+    ValueType: 1
+    ParamValue: 0.5
+    ConditionType: 
+    ConditionValue: 
+    UITextKey: 
+  - SkillLevel: 5
+    ParamName: BaseCoolTime
+    ValueType: 1
+    ParamValue: -0.2
+    ConditionType: 
+    ConditionValue: 
+    UITextKey: 

@@ -1,0 +1,78 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ab8733e747d34d45b8fc7a9288a0401, type: 3}
+  m_Name: SK_P_001
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonRush.Stats.Data.SO.SkillSpecSO
+  _id: SK_P_001
+  _skillName: "\uD798\uC758 \uB8EC"
+  eSkillType: 1
+  _subType: StatPassive
+  _maxLevel: 5
+  _skillGroup: 10
+  _grade: Common
+  _rate: 1
+  _linkedEffectGroupIds: []
+  _descKey: SKILL_DESC_RUNE_POWER
+  _iconPath: Icons/Rune/power
+  _prefabPath: 
+  _castVFXPath: 
+  _hitVFXPath: 
+  _sfxPath: 
+  _weaponTagReq: 
+  _attackData:
+    SkillCoef: 0
+    BaseCoolTime: 0
+    CritEnabled: 0
+    LifestealEnabled: 0
+    BaseRange: 0
+    BaseRadius: 0
+    BaseKnockback: 0
+    PierceCount: 0
+    ChainCount: 0
+    BounceCount: 0
+    BaseProj: 0
+    BaseProjSpeed: 0
+    FirePattern: 
+    BaseDuration: 0
+    TickInterval: 0
+    TickCoef: 0
+    MaxStack: 0
+    StackRule: 0
+  _passiveData:
+    PassiveEffectType: StatModify
+    TargetStat: ATK
+    ModifyType: Mult
+    ModifyValue: 0.08
+    ApplyScope: PlayerGlobal
+    ApplySkillTag: 
+    ApplySkillID: 
+    TriggerType: None
+    TriggerChance: 0
+    TriggerCoolTime: 0
+    BuffDuration: 0
+    StackLimit: 0
+    PassivePrefabPath: 
+  _levelUpEntries:
+  - SkillLevel: 2
+    ParamName: ModifyValue
+    ValueType: 1
+    ParamValue: 0.04
+    ConditionType: 
+    ConditionValue: 
+    UITextKey: 
+  - SkillLevel: 3
+    ParamName: ModifyValue
+    ValueType: 1
+    ParamValue: 0.04
+    ConditionType: 
+    ConditionValue: 
+    UITextKey: 

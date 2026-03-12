@@ -1,28 +1,12 @@
 using System;
+using System.Collections.Generic;
 
 namespace DungeonRush.Stats.Data
 {
     [Serializable]
     public class SkillAttackData
     {
-        public float SkillCoef;
-        public float BaseCoolTime;
-        public bool CritEnabled;
-        public bool LifestealEnabled;
-        public float BaseRange;
-        public float BaseRadius;
-        public float BaseKnockback;
-        public int PierceCount;
-        public int ChainCount;
-        public int BounceCount;
-        public int BaseProj;
-        public float BaseProjSpeed;
-        public string FirePattern;
-        public float BaseDuration;
-        public float TickInterval;
-        public float TickCoef;
-        public int MaxStack;
-        public int StackRule;
+        private readonly Dictionary<string, float> _params = new();
 
         public static readonly string[] AllParams =
         {
@@ -32,55 +16,45 @@ namespace DungeonRush.Stats.Data
             "TickCoef", "MaxStack", "StackRule"
         };
 
+        public float SkillCoef { get => GetParam("SkillCoef"); set => SetParam("SkillCoef", value); }
+        public float BaseCoolTime { get => GetParam("BaseCoolTime"); set => SetParam("BaseCoolTime", value); }
+        public bool CritEnabled;
+        public bool LifestealEnabled;
+        public float BaseRange { get => GetParam("BaseRange"); set => SetParam("BaseRange", value); }
+        public float BaseRadius { get => GetParam("BaseRadius"); set => SetParam("BaseRadius", value); }
+        public float BaseKnockback { get => GetParam("BaseKnockback"); set => SetParam("BaseKnockback", value); }
+        public int PierceCount { get => (int)GetParam("PierceCount"); set => SetParam("PierceCount", value); }
+        public int ChainCount { get => (int)GetParam("ChainCount"); set => SetParam("ChainCount", value); }
+        public int BounceCount { get => (int)GetParam("BounceCount"); set => SetParam("BounceCount", value); }
+        public int BaseProj { get => (int)GetParam("BaseProj"); set => SetParam("BaseProj", value); }
+        public float BaseProjSpeed { get => GetParam("BaseProjSpeed"); set => SetParam("BaseProjSpeed", value); }
+        public string FirePattern;
+        public float BaseDuration { get => GetParam("BaseDuration"); set => SetParam("BaseDuration", value); }
+        public float TickInterval { get => GetParam("TickInterval"); set => SetParam("TickInterval", value); }
+        public float TickCoef { get => GetParam("TickCoef"); set => SetParam("TickCoef", value); }
+        public int MaxStack { get => (int)GetParam("MaxStack"); set => SetParam("MaxStack", value); }
+        public int StackRule { get => (int)GetParam("StackRule"); set => SetParam("StackRule", value); }
+
         public float GetParam(string param)
         {
-            return param switch
-            {
-                "SkillCoef" => SkillCoef,
-                "BaseCoolTime" => BaseCoolTime,
-                "BaseRange" => BaseRange,
-                "BaseRadius" => BaseRadius,
-                "BaseKnockback" => BaseKnockback,
-                "PierceCount" => PierceCount,
-                "ChainCount" => ChainCount,
-                "BounceCount" => BounceCount,
-                "BaseProj" => BaseProj,
-                "BaseProjSpeed" => BaseProjSpeed,
-                "BaseDuration" => BaseDuration,
-                "TickInterval" => TickInterval,
-                "TickCoef" => TickCoef,
-                "MaxStack" => MaxStack,
-                "StackRule" => StackRule,
-                _ => throw new ArgumentException($"Unknown attack param: {param}")
-            };
+            return _params.TryGetValue(param, out float v) ? v : 0f;
         }
 
         public void SetParam(string param, float value)
         {
-            switch (param)
-            {
-                case "SkillCoef": SkillCoef = value; break;
-                case "BaseCoolTime": BaseCoolTime = value; break;
-                case "BaseRange": BaseRange = value; break;
-                case "BaseRadius": BaseRadius = value; break;
-                case "BaseKnockback": BaseKnockback = value; break;
-                case "PierceCount": PierceCount = (int)value; break;
-                case "ChainCount": ChainCount = (int)value; break;
-                case "BounceCount": BounceCount = (int)value; break;
-                case "BaseProj": BaseProj = (int)value; break;
-                case "BaseProjSpeed": BaseProjSpeed = value; break;
-                case "BaseDuration": BaseDuration = value; break;
-                case "TickInterval": TickInterval = value; break;
-                case "TickCoef": TickCoef = value; break;
-                case "MaxStack": MaxStack = (int)value; break;
-                case "StackRule": StackRule = (int)value; break;
-                default: throw new ArgumentException($"Unknown attack param: {param}");
-            }
+            _params[param] = value;
         }
 
         public SkillAttackData Clone()
         {
-            var clone = (SkillAttackData)MemberwiseClone();
+            var clone = new SkillAttackData();
+            foreach (var kvp in _params)
+            {
+                clone._params[kvp.Key] = kvp.Value;
+            }
+
+            clone.CritEnabled = CritEnabled;
+            clone.LifestealEnabled = LifestealEnabled;
             clone.FirePattern = FirePattern;
             return clone;
         }

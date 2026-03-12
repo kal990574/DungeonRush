@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: da5e2564b619bc54bb9150bde3f0d1e3, type: 3}
+  m_Name: StatDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonRush.Stats.Data.SO.StatDatabaseSO
+  _characters:
+  - {fileID: 11400000, guid: 9824ea70df3999e4f9a5e5310e71303d, type: 2}
+  - {fileID: 11400000, guid: a7bee16dd54014a46828829c58b37327, type: 2}
+  - {fileID: 11400000, guid: c081c2e9dea869d419ae3bb5103c28b9, type: 2}
+  - {fileID: 11400000, guid: de5de30350ce45942a35f3f56ac139ce, type: 2}
+  _skills:
+  - {fileID: 11400000, guid: 3e027e07a0e15ce49b476956acd4e2c0, type: 2}
+  - {fileID: 11400000, guid: a10fc21c310417549b67551f372bc76c, type: 2}
+  - {fileID: 11400000, guid: 7602cc0dbb9e09b428aaa4b901ccc055, type: 2}
+  - {fileID: 11400000, guid: a672441f489ba3148aa0d0e20a0513ff, type: 2}
+  - {fileID: 11400000, guid: b7aa1434b7b5176489c3e3fdaffc0759, type: 2}
+  - {fileID: 11400000, guid: eb1ae1771593481429c6aefef45213f7, type: 2}

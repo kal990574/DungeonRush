@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ab8733e747d34d45b8fc7a9288a0401, type: 3}
+  m_Name: SK_A_003
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonRush.Stats.Data.SO.SkillSpecSO
+  _id: SK_A_003
+  _skillName: "\uB3C5\uB2E8\uAC80"
+  eSkillType: 0
+  _subType: Projectile
+  _maxLevel: 5
+  _skillGroup: 2
+  _grade: Common
+  _rate: 1
+  _linkedEffectGroupIds: []
+  _descKey: SKILL_DESC_DAGGER
+  _iconPath: Icons/Skill/dagger
+  _prefabPath: Prefabs/Skill/Dagger
+  _castVFXPath: 
+  _hitVFXPath: VFX/Hit_Dagger
+  _sfxPath: SFX/dagger
+  _weaponTagReq: 
+  _attackData:
+    SkillCoef: 0.8
+    BaseCoolTime: 0.6
+    CritEnabled: 1
+    LifestealEnabled: 0
+    BaseRange: 3
+    BaseRadius: 0
+    BaseKnockback: 0.3
+    PierceCount: 0
+    ChainCount: 0
+    BounceCount: 0
+    BaseProj: 1
+    BaseProjSpeed: 8
+    FirePattern: Single
+    BaseDuration: 3
+    TickInterval: 1
+    TickCoef: 0.3
+    MaxStack: 5
+    StackRule: 1
+  _passiveData:
+    PassiveEffectType: 
+    TargetStat: 
+    ModifyType: 
+    ModifyValue: 0
+    ApplyScope: 
+    ApplySkillTag: 
+    ApplySkillID: 
+    TriggerType: 
+    TriggerChance: 0
+    TriggerCoolTime: 0
+    BuffDuration: 0
+    StackLimit: 0
+    PassivePrefabPath: 
+  _levelUpEntries: []

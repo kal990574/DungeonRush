@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a8a615d843245f645bb364df877a705b, type: 3}
+  m_Name: Player_003
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonRush.Stats.Data.SO.CharacterSpecSO
+  _id: Player_003
+  _characterName: "\uC554\uC0B4\uC790"
+  _grade: 1
+  _modelPrefab: Assassin_001
+  _startActiveSkillId: SK_A_003
+  _startPassiveSkillId: 
+  _weaponTypeTag: Dagger
+  _characterTraitId: TR_003
+  _atk: 8
+  _cdr: 0
+  _critRate: 0.05
+  _critDamage: 2
+  _hp: 70
+  _hpRegen: 0
+  _armor: 0
+  _evasion: 0.06
+  _moveSpeed: 1.2
+  _pickupRange: 1
+  _expGain: 1
+  _goldGain: 1
+  _luck: 0
+  _lifesteal: 0
+  _thorns: 0

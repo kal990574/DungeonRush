@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace DungeonRush.Stats.Repository.Csv
@@ -148,6 +150,93 @@ namespace DungeonRush.Stats.Repository.Csv
             }
 
             return result;
+        }
+
+        // 헤더 배열에서 컬럼 이름으로 인덱스를 검색.
+        public static int FindColumn(string[] headers, string name)
+        {
+            for (int i = 0; i < headers.Length; i++)
+            {
+                if (headers[i].Trim().Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return i;
+                }
+            }
+
+            return -1;
+        }
+
+        // 안전한 필드 접근. 인덱스 범위 밖이면 빈 문자열 반환.
+        public static string GetField(string[] cols, int index)
+        {
+            if (index >= 0 && index < cols.Length)
+            {
+                return cols[index].Trim();
+            }
+
+            return string.Empty;
+        }
+
+        public static float ParseFloat(string value)
+        {
+            if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float result))
+            {
+                return result;
+            }
+
+            return 0f;
+        }
+
+        public static int ParseInt(string value, int defaultValue = 0)
+        {
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result))
+            {
+                return result;
+            }
+
+            return defaultValue;
+        }
+
+        public static bool ParseBool(string value)
+        {
+            return value.Equals("TRUE", StringComparison.OrdinalIgnoreCase);
+        }
+
+        public static string[] ParseStringArray(string value, char separator)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return Array.Empty<string>();
+            }
+
+            string[] parts = value.Split(separator);
+            var result = new List<string>();
+            foreach (string part in parts)
+            {
+                string trimmed = part.Trim();
+                if (!string.IsNullOrEmpty(trimmed))
+                {
+                    result.Add(trimmed);
+                }
+            }
+
+            return result.ToArray();
+        }
+
+        // 필수 컬럼 검증. 누락 시 경고 로그 반환.
+        public static bool ValidateRequiredColumns(string[] headers, string context, params string[] required)
+        {
+            bool allFound = true;
+            foreach (string name in required)
+            {
+                if (FindColumn(headers, name) < 0)
+                {
+                    UnityEngine.Debug.LogWarning($"[CsvParser] {context}: 필수 컬럼 '{name}' 누락.");
+                    allFound = false;
+                }
+            }
+
+            return allFound;
         }
     }
 }

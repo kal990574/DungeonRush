@@ -1,0 +1,64 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0ab8733e747d34d45b8fc7a9288a0401, type: 3}
+  m_Name: SK_A_004
+  m_EditorClassIdentifier: Assembly-CSharp::DungeonRush.Stats.Data.SO.SkillSpecSO
+  _id: SK_A_004
+  _skillName: "\uB300\uAC80"
+  eSkillType: 0
+  _subType: Melee
+  _maxLevel: 5
+  _skillGroup: 3
+  _grade: Common
+  _rate: 1
+  _linkedEffectGroupIds: []
+  _descKey: SKILL_DESC_SWORD
+  _iconPath: Icons/Skill/sword
+  _prefabPath: Prefabs/Skill/Sword
+  _castVFXPath: VFX/Cast_Sword
+  _hitVFXPath: VFX/Hit_Sword
+  _sfxPath: SFX/sword
+  _weaponTagReq: 
+  _attackData:
+    SkillCoef: 1.5
+    BaseCoolTime: 1.2
+    CritEnabled: 1
+    LifestealEnabled: 1
+    BaseRange: 2
+    BaseRadius: 1.5
+    BaseKnockback: 2
+    PierceCount: 3
+    ChainCount: 0
+    BounceCount: 0
+    BaseProj: 1
+    BaseProjSpeed: 0
+    FirePattern: Single
+    BaseDuration: 0
+    TickInterval: 0
+    TickCoef: 0
+    MaxStack: 1
+    StackRule: 0
+  _passiveData:
+    PassiveEffectType: 
+    TargetStat: 
+    ModifyType: 
+    ModifyValue: 0
+    ApplyScope: 
+    ApplySkillTag: 
+    ApplySkillID: 
+    TriggerType: 
+    TriggerChance: 0
+    TriggerCoolTime: 0
+    BuffDuration: 0
+    StackLimit: 0
+    PassivePrefabPath: 
+  _levelUpEntries: []

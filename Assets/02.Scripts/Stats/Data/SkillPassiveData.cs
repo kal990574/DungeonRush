@@ -1,23 +1,12 @@
 using System;
+using System.Collections.Generic;
 
 namespace DungeonRush.Stats.Data
 {
     [Serializable]
     public class SkillPassiveData
     {
-        public string PassiveEffectType;
-        public string TargetStat;
-        public string ModifyType;
-        public float ModifyValue;
-        public string ApplyScope;
-        public string ApplySkillTag;
-        public string ApplySkillID;
-        public string TriggerType;
-        public float TriggerChance;
-        public float TriggerCoolTime;
-        public float BuffDuration;
-        public int StackLimit;
-        public string PassivePrefabPath;
+        private readonly Dictionary<string, float> _params = new();
 
         public static readonly string[] AllParams =
         {
@@ -25,35 +14,47 @@ namespace DungeonRush.Stats.Data
             "BuffDuration", "StackLimit"
         };
 
+        public string PassiveEffectType;
+        public string TargetStat;
+        public string ModifyType;
+        public float ModifyValue { get => GetParam("ModifyValue"); set => SetParam("ModifyValue", value); }
+        public string ApplyScope;
+        public string ApplySkillTag;
+        public string ApplySkillID;
+        public string TriggerType;
+        public float TriggerChance { get => GetParam("TriggerChance"); set => SetParam("TriggerChance", value); }
+        public float TriggerCoolTime { get => GetParam("TriggerCoolTime"); set => SetParam("TriggerCoolTime", value); }
+        public float BuffDuration { get => GetParam("BuffDuration"); set => SetParam("BuffDuration", value); }
+        public int StackLimit { get => (int)GetParam("StackLimit"); set => SetParam("StackLimit", value); }
+        public string PassivePrefabPath;
+
         public float GetParam(string param)
         {
-            return param switch
-            {
-                "ModifyValue" => ModifyValue,
-                "TriggerChance" => TriggerChance,
-                "TriggerCoolTime" => TriggerCoolTime,
-                "BuffDuration" => BuffDuration,
-                "StackLimit" => StackLimit,
-                _ => throw new ArgumentException($"Unknown passive param: {param}")
-            };
+            return _params.TryGetValue(param, out float v) ? v : 0f;
         }
 
         public void SetParam(string param, float value)
         {
-            switch (param)
-            {
-                case "ModifyValue": ModifyValue = value; break;
-                case "TriggerChance": TriggerChance = value; break;
-                case "TriggerCoolTime": TriggerCoolTime = value; break;
-                case "BuffDuration": BuffDuration = value; break;
-                case "StackLimit": StackLimit = (int)value; break;
-                default: throw new ArgumentException($"Unknown passive param: {param}");
-            }
+            _params[param] = value;
         }
 
         public SkillPassiveData Clone()
         {
-            return (SkillPassiveData)MemberwiseClone();
+            var clone = new SkillPassiveData();
+            foreach (var kvp in _params)
+            {
+                clone._params[kvp.Key] = kvp.Value;
+            }
+
+            clone.PassiveEffectType = PassiveEffectType;
+            clone.TargetStat = TargetStat;
+            clone.ModifyType = ModifyType;
+            clone.ApplyScope = ApplyScope;
+            clone.ApplySkillTag = ApplySkillTag;
+            clone.ApplySkillID = ApplySkillID;
+            clone.TriggerType = TriggerType;
+            clone.PassivePrefabPath = PassivePrefabPath;
+            return clone;
         }
     }
 }
