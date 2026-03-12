@@ -170,7 +170,7 @@ namespace DungeonRush.Stats.Editor
                 {
                     Id = id,
                     Name = CsvParser.GetField(cols, idxName),
-                    ESkillType = skillType,
+                    SkillType = skillType,
                     SubType = CsvParser.GetField(cols, idxSubType),
                     MaxLevel = CsvParser.ParseInt(CsvParser.GetField(cols, idxMaxLevel), 5),
                     SkillGroup = CsvParser.ParseInt(CsvParser.GetField(cols, idxGroup)),

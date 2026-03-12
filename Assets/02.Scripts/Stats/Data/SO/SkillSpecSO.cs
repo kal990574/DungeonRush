@@ -43,7 +43,7 @@ namespace DungeonRush.Stats.Data.SO
             {
                 Id = _id,
                 Name = _skillName,
-                ESkillType = eSkillType,
+                SkillType = eSkillType,
                 SubType = _subType,
                 MaxLevel = _maxLevel,
                 SkillGroup = _skillGroup,
@@ -109,7 +109,7 @@ namespace DungeonRush.Stats.Data.SO
         {
             _id = spec.Id;
             _skillName = spec.Name;
-            eSkillType = spec.ESkillType;
+            eSkillType = spec.SkillType;
             _subType = spec.SubType;
             _maxLevel = spec.MaxLevel;
             _skillGroup = spec.SkillGroup;
