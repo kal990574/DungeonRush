@@ -113,7 +113,13 @@ namespace DungeonRush.Stats.Runtime
         {
             _cachedFinals.Clear();
 
-            foreach (string key in BaseStats.AllKeys)
+            var allKeys = new HashSet<string>(BaseStats.AllKeys);
+            foreach (var mod in _modifiers)
+            {
+                allKeys.Add(mod.StatKey);
+            }
+
+            foreach (string key in allKeys)
             {
                 float baseValue = GetBase(key);
                 float flatSum = 0f;

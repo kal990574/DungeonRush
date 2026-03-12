@@ -4,6 +4,7 @@ namespace DungeonRush.Stats.Data
 {
     public enum ValueType
     {
+        Set,
         Flat,
         Percent
     }

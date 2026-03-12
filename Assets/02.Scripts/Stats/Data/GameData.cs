@@ -129,23 +129,26 @@ namespace DungeonRush.Stats.Data
         private static void ApplyModToAttack(SkillAttackData data, ParamModification mod)
         {
             float current = data.GetParam(mod.ParamName);
-
-            float newValue = mod.ValueType == ValueType.Flat
-                ? current + mod.Value
-                : current * (1f + mod.Value);
-
+            float newValue = ApplyMod(current, mod);
             data.SetParam(mod.ParamName, newValue);
         }
 
         private static void ApplyModToPassive(SkillPassiveData data, ParamModification mod)
         {
             float current = data.GetParam(mod.ParamName);
-
-            float newValue = mod.ValueType == ValueType.Flat
-                ? current + mod.Value
-                : current * (1f + mod.Value);
-
+            float newValue = ApplyMod(current, mod);
             data.SetParam(mod.ParamName, newValue);
+        }
+
+        private static float ApplyMod(float current, ParamModification mod)
+        {
+            return mod.ValueType switch
+            {
+                ValueType.Set => mod.Value,
+                ValueType.Flat => current + mod.Value,
+                ValueType.Percent => current * (1f + mod.Value),
+                _ => current
+            };
         }
     }
 }

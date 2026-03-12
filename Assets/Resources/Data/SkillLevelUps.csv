@@ -1,0 +1,12 @@
+SkillId,Level,ParamName,ValueType,Value
+SK_A_001,2,SkillCoef,Flat,0.15
+SK_A_001,2,BaseCoolTime,Flat,-0.1
+SK_A_001,3,SkillCoef,Flat,0.2
+SK_A_001,3,BaseProj,Flat,1
+SK_A_001,4,SkillCoef,Percent,0.1
+SK_A_001,5,SkillCoef,Flat,0.5
+SK_A_001,5,BaseCoolTime,Flat,-0.2
+SK_A_002,2,BaseCoolTime,Flat,-0.05
+SK_A_002,3,BounceCount,Flat,1
+SK_P_001,2,ModifyValue,Flat,0.04
+SK_P_001,3,ModifyValue,Flat,0.04

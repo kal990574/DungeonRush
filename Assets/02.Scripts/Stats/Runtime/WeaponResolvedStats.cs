@@ -47,44 +47,44 @@ namespace DungeonRush.Stats.Runtime
             float cdr = _characterStats.GetFinal("CDR");
             if (cdr > 0f)
             {
-                _resolved.Cooldown *= (1f - cdr);
-                if (_resolved.Cooldown < 0.1f)
+                _resolved.BaseCoolTime *= (1f - cdr);
+                if (_resolved.BaseCoolTime < 0.1f)
                 {
-                    _resolved.Cooldown = 0.1f;
+                    _resolved.BaseCoolTime = 0.1f;
                 }
             }
 
-            // 캐릭터 공격속도 적용.
-            float attackSpeed = _characterStats.GetFinal("AttackSpeed");
-            if (attackSpeed > 0f && attackSpeed != 1f)
-            {
-                _resolved.Cooldown /= attackSpeed;
-                if (_resolved.Cooldown < 0.1f)
-                {
-                    _resolved.Cooldown = 0.1f;
-                }
-            }
-
-            // 캐릭터 투사체 속도 보정.
-            float projSpeedBonus = _characterStats.GetFinal("ProjectileSpeed");
-            if (projSpeedBonus > 0f)
-            {
-                _resolved.ProjectileSpeed += projSpeedBonus;
-            }
-
-            // 캐릭터 영역 크기 보정.
-            float areaSize = _characterStats.GetFinal("AreaSize");
-            if (areaSize > 0f && areaSize != 1f)
-            {
-                _resolved.AreaSize *= areaSize;
-            }
-
-            // 캐릭터 크리티컬 보너스.
-            float critChance = _characterStats.GetFinal("CritChance");
-            _resolved.CritChanceBonus += critChance;
-
+            // 캐릭터 크리티컬 보정.
+            float critRate = _characterStats.GetFinal("CritRate");
             float critDamage = _characterStats.GetFinal("CritDamage");
-            _resolved.CritDamageBonus += critDamage;
+
+            // 전역 투사체 수 보너스.
+            float projBonus = _characterStats.GetFinal("BaseProj");
+            if (projBonus > 0f)
+            {
+                _resolved.BaseProj += (int)projBonus;
+            }
+
+            // 전역 관통 보너스.
+            float pierceBonus = _characterStats.GetFinal("PierceCount");
+            if (pierceBonus > 0f)
+            {
+                _resolved.PierceCount += (int)pierceBonus;
+            }
+
+            // 전역 넉백 보너스.
+            float knockbackBonus = _characterStats.GetFinal("BaseKnockback");
+            if (knockbackBonus > 0f)
+            {
+                _resolved.BaseKnockback += knockbackBonus;
+            }
+
+            // 전역 바운스 보너스.
+            float bounceBonus = _characterStats.GetFinal("BounceCount");
+            if (bounceBonus > 0f)
+            {
+                _resolved.BounceCount += (int)bounceBonus;
+            }
 
             _isDirty = false;
             return _resolved;

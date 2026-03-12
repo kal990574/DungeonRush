@@ -20,27 +20,37 @@ namespace DungeonRush.Stats.Repository.Csv
 
             string[] headers = rows[0];
 
+            int idxId = FindColumn(headers, "PlayerID");
+            int idxName = FindColumn(headers, "PlayerName");
+            int idxGrade = FindColumn(headers, "Grade");
+            int idxModel = FindColumn(headers, "PlayerModelPrefab");
+            int idxActiveSkill = FindColumn(headers, "StartActiveSkillID");
+            int idxPassiveSkill = FindColumn(headers, "StartPassiveSkillID");
+            int idxWeaponTag = FindColumn(headers, "WeaponTypeTag");
+            int idxTrait = FindColumn(headers, "CharacterTraitID");
+
             for (int r = 1; r < rows.Count; r++)
             {
                 string[] cols = rows[r];
-                if (cols.Length < 4)
-                {
-                    continue;
-                }
 
-                string id = cols[0].Trim();
+                string id = GetField(cols, idxId);
                 if (string.IsNullOrEmpty(id))
                 {
                     continue;
                 }
 
-                string name = cols[1].Trim();
-                string type = cols[2].Trim();
+                string name = GetField(cols, idxName);
+                int grade = ParseInt(GetField(cols, idxGrade), 0);
+                string modelPrefab = GetField(cols, idxModel);
+                string activeSkill = GetField(cols, idxActiveSkill);
+                string passiveSkill = GetField(cols, idxPassiveSkill);
+                string weaponTag = GetField(cols, idxWeaponTag);
+                string traitId = GetField(cols, idxTrait);
 
                 var stats = new BaseStats();
-                for (int c = 3; c < headers.Length && c < cols.Length; c++)
+                for (int c = 0; c < headers.Length && c < cols.Length; c++)
                 {
-                    string header = StripBasePrefix(headers[c].Trim());
+                    string header = headers[c].Trim();
                     string value = cols[c].Trim();
 
                     if (string.IsNullOrEmpty(value))
@@ -56,12 +66,14 @@ namespace DungeonRush.Stats.Repository.Csv
                         }
                         catch (ArgumentException)
                         {
-                            // 알 수 없는 스탯 키는 무시.
+                            // 스탯 키가 아닌 컬럼은 무시.
                         }
                     }
                 }
 
-                var spec = new CharacterSpec(id, name, type, stats);
+                var spec = new CharacterSpec(
+                    id, name, grade, modelPrefab, stats,
+                    activeSkill, passiveSkill, weaponTag, traitId);
                 _characters[id] = spec;
                 _allCharacters.Add(spec);
             }
@@ -77,14 +89,37 @@ namespace DungeonRush.Stats.Repository.Csv
             return _allCharacters;
         }
 
-        private static string StripBasePrefix(string header)
+        private static int FindColumn(string[] headers, string name)
         {
-            if (header.StartsWith("Base", StringComparison.Ordinal) && header.Length > 4)
+            for (int i = 0; i < headers.Length; i++)
             {
-                return header.Substring(4);
+                if (headers[i].Trim().Equals(name, StringComparison.OrdinalIgnoreCase))
+                {
+                    return i;
+                }
             }
 
-            return header;
+            return -1;
+        }
+
+        private static string GetField(string[] cols, int index)
+        {
+            if (index >= 0 && index < cols.Length)
+            {
+                return cols[index].Trim();
+            }
+
+            return string.Empty;
+        }
+
+        private static int ParseInt(string value, int defaultValue)
+        {
+            if (int.TryParse(value, NumberStyles.Integer, CultureInfo.InvariantCulture, out int result))
+            {
+                return result;
+            }
+
+            return defaultValue;
         }
     }
 }

@@ -5,49 +5,56 @@ namespace DungeonRush.Stats.Data
     [Serializable]
     public class BaseStats
     {
-        public float MaxHp;
-        public float HpRegen;
-        public float Armor;
-        public float MoveSpeed;
+        // 공격.
         public float ATK;
-        public float AttackSpeed;
-        public float AttackRange;
-        public float CritChance;
-        public float CritDamage;
         public float CDR;
-        public float AreaSize;
-        public float ProjectileCount;
-        public float ProjectileSpeed;
-        public float DetectRange;
+        public float CritRate;
+        public float CritDamage;
+
+        // 방어.
+        public float HP;
+        public float HPRegen;
+        public float Armor;
+        public float Evasion;
+
+        // 유틸/파밍.
+        public float MoveSpeed;
+        public float PickupRange;
+        public float ExpGain;
+        public float GoldGain;
         public float Luck;
+
+        // 특수.
+        public float Lifesteal;
+        public float Thorns;
 
         public static readonly string[] AllKeys =
         {
-            "MaxHp", "HpRegen", "Armor", "MoveSpeed", "ATK",
-            "AttackSpeed", "AttackRange", "CritChance", "CritDamage",
-            "CDR", "AreaSize", "ProjectileCount", "ProjectileSpeed",
-            "DetectRange", "Luck"
+            "ATK", "CDR", "CritRate", "CritDamage",
+            "HP", "HPRegen", "Armor", "Evasion",
+            "MoveSpeed", "PickupRange", "ExpGain", "GoldGain", "Luck",
+            "Lifesteal", "Thorns"
         };
 
         public float GetValue(string key)
         {
             return key switch
             {
-                "MaxHp" => MaxHp,
-                "HpRegen" => HpRegen,
-                "Armor" => Armor,
-                "MoveSpeed" => MoveSpeed,
                 "ATK" => ATK,
-                "AttackSpeed" => AttackSpeed,
-                "AttackRange" => AttackRange,
-                "CritChance" => CritChance,
-                "CritDamage" => CritDamage,
                 "CDR" => CDR,
-                "AreaSize" => AreaSize,
-                "ProjectileCount" => ProjectileCount,
-                "ProjectileSpeed" => ProjectileSpeed,
-                "DetectRange" => DetectRange,
+                "CritRate" => CritRate,
+                "CritDamage" => CritDamage,
+                "HP" => HP,
+                "HPRegen" => HPRegen,
+                "Armor" => Armor,
+                "Evasion" => Evasion,
+                "MoveSpeed" => MoveSpeed,
+                "PickupRange" => PickupRange,
+                "ExpGain" => ExpGain,
+                "GoldGain" => GoldGain,
                 "Luck" => Luck,
+                "Lifesteal" => Lifesteal,
+                "Thorns" => Thorns,
                 _ => throw new ArgumentException($"Unknown stat key: {key}")
             };
         }
@@ -56,21 +63,21 @@ namespace DungeonRush.Stats.Data
         {
             switch (key)
             {
-                case "MaxHp": MaxHp = value; break;
-                case "HpRegen": HpRegen = value; break;
-                case "Armor": Armor = value; break;
-                case "MoveSpeed": MoveSpeed = value; break;
                 case "ATK": ATK = value; break;
-                case "AttackSpeed": AttackSpeed = value; break;
-                case "AttackRange": AttackRange = value; break;
-                case "CritChance": CritChance = value; break;
-                case "CritDamage": CritDamage = value; break;
                 case "CDR": CDR = value; break;
-                case "AreaSize": AreaSize = value; break;
-                case "ProjectileCount": ProjectileCount = value; break;
-                case "ProjectileSpeed": ProjectileSpeed = value; break;
-                case "DetectRange": DetectRange = value; break;
+                case "CritRate": CritRate = value; break;
+                case "CritDamage": CritDamage = value; break;
+                case "HP": HP = value; break;
+                case "HPRegen": HPRegen = value; break;
+                case "Armor": Armor = value; break;
+                case "Evasion": Evasion = value; break;
+                case "MoveSpeed": MoveSpeed = value; break;
+                case "PickupRange": PickupRange = value; break;
+                case "ExpGain": ExpGain = value; break;
+                case "GoldGain": GoldGain = value; break;
                 case "Luck": Luck = value; break;
+                case "Lifesteal": Lifesteal = value; break;
+                case "Thorns": Thorns = value; break;
                 default: throw new ArgumentException($"Unknown stat key: {key}");
             }
         }

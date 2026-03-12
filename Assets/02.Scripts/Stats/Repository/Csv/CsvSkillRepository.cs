@@ -48,12 +48,22 @@ namespace DungeonRush.Stats.Repository.Csv
 
             string[] headers = rows[0];
 
-            // 공통 헤더 인덱스 탐색.
-            int idxId = FindColumn(headers, "Id");
-            int idxName = FindColumn(headers, "Name");
-            int idxDesc = FindColumn(headers, "Description");
-            int idxCategory = FindColumn(headers, "Category");
+            int idxId = FindColumn(headers, "SkillID");
+            int idxName = FindColumn(headers, "SkillName");
+            int idxType = FindColumn(headers, "SkillType");
+            int idxSubType = FindColumn(headers, "SkillSubType");
             int idxMaxLevel = FindColumn(headers, "MaxLevel");
+            int idxGroup = FindColumn(headers, "SkillGroup");
+            int idxGrade = FindColumn(headers, "Grade");
+            int idxRate = FindColumn(headers, "Rate");
+            int idxLinked = FindColumn(headers, "LinkedEffectGroupID");
+            int idxDesc = FindColumn(headers, "DescKey");
+            int idxIcon = FindColumn(headers, "IconPath");
+            int idxPrefab = FindColumn(headers, "PrefabPath");
+            int idxCastVfx = FindColumn(headers, "CastVFXPath");
+            int idxHitVfx = FindColumn(headers, "HitVFXPath");
+            int idxSfx = FindColumn(headers, "SFXPath");
+            int idxWeaponReq = FindColumn(headers, "WeaponTagReq");
 
             for (int r = 1; r < rows.Count; r++)
             {
@@ -64,28 +74,40 @@ namespace DungeonRush.Stats.Repository.Csv
                     continue;
                 }
 
-                string name = GetField(cols, idxName);
-                string description = GetField(cols, idxDesc);
-                string categoryStr = GetField(cols, idxCategory);
-                int maxLevel = ParseInt(GetField(cols, idxMaxLevel), 5);
-
-                var category = categoryStr.Equals("Passive", StringComparison.OrdinalIgnoreCase)
+                string typeStr = GetField(cols, idxType);
+                var category = typeStr == "1"
                     ? SkillCategory.Passive
                     : SkillCategory.Attack;
 
-                SkillAttackData attackData = null;
-                SkillPassiveData passiveData = null;
+                var spec = new SkillSpec
+                {
+                    Id = id,
+                    Name = GetField(cols, idxName),
+                    Category = category,
+                    SubType = GetField(cols, idxSubType),
+                    MaxLevel = ParseInt(GetField(cols, idxMaxLevel), 5),
+                    SkillGroup = ParseInt(GetField(cols, idxGroup), 0),
+                    Grade = GetField(cols, idxGrade),
+                    Rate = ParseFloat(GetField(cols, idxRate)),
+                    LinkedEffectGroupIds = ParseStringArray(GetField(cols, idxLinked), ';'),
+                    DescKey = GetField(cols, idxDesc),
+                    IconPath = GetField(cols, idxIcon),
+                    PrefabPath = GetField(cols, idxPrefab),
+                    CastVFXPath = GetField(cols, idxCastVfx),
+                    HitVFXPath = GetField(cols, idxHitVfx),
+                    SFXPath = GetField(cols, idxSfx),
+                    WeaponTagReq = GetField(cols, idxWeaponReq)
+                };
 
                 if (category == SkillCategory.Attack)
                 {
-                    attackData = ParseAttackData(headers, cols);
+                    spec.AttackData = ParseAttackData(headers, cols);
                 }
                 else
                 {
-                    passiveData = ParsePassiveData(headers, cols);
+                    spec.PassiveData = ParsePassiveData(headers, cols);
                 }
 
-                var spec = new SkillSpec(id, name, description, category, maxLevel, attackData, passiveData);
                 _skills[id] = spec;
                 _allSkills.Add(spec);
             }
@@ -125,13 +147,22 @@ namespace DungeonRush.Stats.Repository.Csv
                 string valueTypeStr = GetField(cols, idxValueType);
                 float value = ParseFloat(GetField(cols, idxValue));
 
-                var valueType = valueTypeStr.Equals("Percent", StringComparison.OrdinalIgnoreCase)
-                    ? ValueType.Percent
-                    : ValueType.Flat;
+                ValueType valueType;
+                if (valueTypeStr.Equals("Percent", StringComparison.OrdinalIgnoreCase))
+                {
+                    valueType = ValueType.Percent;
+                }
+                else if (valueTypeStr.Equals("Set", StringComparison.OrdinalIgnoreCase))
+                {
+                    valueType = ValueType.Set;
+                }
+                else
+                {
+                    valueType = ValueType.Flat;
+                }
 
                 var mod = new ParamModification(paramName, valueType, value);
 
-                // 동일 (SkillId, Level) 그룹에 수정 항목 추가.
                 if (!_levelUps.TryGetValue(skillId, out var list))
                 {
                     list = new List<SkillLevelUpData>();
@@ -160,25 +191,43 @@ namespace DungeonRush.Stats.Repository.Csv
         {
             var data = new SkillAttackData();
 
-            for (int c = 0; c < headers.Length && c < cols.Length; c++)
-            {
-                string header = headers[c].Trim();
-                string value = cols[c].Trim();
+            int idxSkillCoef = FindColumn(headers, "SkillCoef");
+            int idxCoolTime = FindColumn(headers, "BaseCoolTime");
+            int idxCritEnabled = FindColumn(headers, "CritEnabled");
+            int idxLifestealEnabled = FindColumn(headers, "LifestealEnabled");
+            int idxRange = FindColumn(headers, "BaseRange");
+            int idxRadius = FindColumn(headers, "BaseRadius");
+            int idxKnockback = FindColumn(headers, "BaseKnockback");
+            int idxPierce = FindColumn(headers, "PierceCount");
+            int idxChain = FindColumn(headers, "ChainCount");
+            int idxBounce = FindColumn(headers, "BounceCount");
+            int idxProj = FindColumn(headers, "BaseProj");
+            int idxProjSpeed = FindColumn(headers, "BaseProjSpeed");
+            int idxFirePattern = FindColumn(headers, "FirePattern");
+            int idxDuration = FindColumn(headers, "BaseDuration");
+            int idxTickInterval = FindColumn(headers, "TickInterval");
+            int idxTickCoef = FindColumn(headers, "TickCoef");
+            int idxMaxStack = FindColumn(headers, "MaxStack");
+            int idxStackRule = FindColumn(headers, "StackRule");
 
-                if (string.IsNullOrEmpty(value))
-                {
-                    continue;
-                }
-
-                try
-                {
-                    data.SetParam(header, ParseFloat(value));
-                }
-                catch (ArgumentException)
-                {
-                    // 공통 헤더이거나 알 수 없는 파라미터는 무시.
-                }
-            }
+            data.SkillCoef = ParseFloat(GetField(cols, idxSkillCoef));
+            data.BaseCoolTime = ParseFloat(GetField(cols, idxCoolTime));
+            data.CritEnabled = ParseBool(GetField(cols, idxCritEnabled));
+            data.LifestealEnabled = ParseBool(GetField(cols, idxLifestealEnabled));
+            data.BaseRange = ParseFloat(GetField(cols, idxRange));
+            data.BaseRadius = ParseFloat(GetField(cols, idxRadius));
+            data.BaseKnockback = ParseFloat(GetField(cols, idxKnockback));
+            data.PierceCount = ParseInt(GetField(cols, idxPierce), 0);
+            data.ChainCount = ParseInt(GetField(cols, idxChain), 0);
+            data.BounceCount = ParseInt(GetField(cols, idxBounce), 0);
+            data.BaseProj = ParseInt(GetField(cols, idxProj), 1);
+            data.BaseProjSpeed = ParseFloat(GetField(cols, idxProjSpeed));
+            data.FirePattern = GetField(cols, idxFirePattern);
+            data.BaseDuration = ParseFloat(GetField(cols, idxDuration));
+            data.TickInterval = ParseFloat(GetField(cols, idxTickInterval));
+            data.TickCoef = ParseFloat(GetField(cols, idxTickCoef));
+            data.MaxStack = ParseInt(GetField(cols, idxMaxStack), 1);
+            data.StackRule = ParseInt(GetField(cols, idxStackRule), 0);
 
             return data;
         }
@@ -187,31 +236,33 @@ namespace DungeonRush.Stats.Repository.Csv
         {
             var data = new SkillPassiveData();
 
-            for (int c = 0; c < headers.Length && c < cols.Length; c++)
-            {
-                string header = headers[c].Trim();
-                string value = cols[c].Trim();
+            int idxEffect = FindColumn(headers, "PassiveEffectType");
+            int idxTarget = FindColumn(headers, "TargetStat");
+            int idxModType = FindColumn(headers, "ModifyType");
+            int idxModValue = FindColumn(headers, "ModifyValue");
+            int idxScope = FindColumn(headers, "ApplyScope");
+            int idxSkillTag = FindColumn(headers, "ApplySkillTag");
+            int idxSkillId = FindColumn(headers, "ApplySkillID");
+            int idxTrigger = FindColumn(headers, "TriggerType");
+            int idxChance = FindColumn(headers, "TriggerChance");
+            int idxCoolTime = FindColumn(headers, "TriggerCoolTime");
+            int idxBuffDur = FindColumn(headers, "BuffDuration");
+            int idxStackLimit = FindColumn(headers, "StackLimit");
+            int idxPrefab = FindColumn(headers, "PassivePrefabPath");
 
-                if (string.IsNullOrEmpty(value))
-                {
-                    continue;
-                }
-
-                if (header == "TargetStat")
-                {
-                    data.TargetStat = value;
-                    continue;
-                }
-
-                try
-                {
-                    data.SetParam(header, ParseFloat(value));
-                }
-                catch (ArgumentException)
-                {
-                    // 공통 헤더이거나 알 수 없는 파라미터는 무시.
-                }
-            }
+            data.EffectType = GetField(cols, idxEffect);
+            data.TargetStat = GetField(cols, idxTarget);
+            data.ModifyType = GetField(cols, idxModType);
+            data.ModifyValue = ParseFloat(GetField(cols, idxModValue));
+            data.ApplyScope = GetField(cols, idxScope);
+            data.ApplySkillTag = GetField(cols, idxSkillTag);
+            data.ApplySkillId = GetField(cols, idxSkillId);
+            data.TriggerType = GetField(cols, idxTrigger);
+            data.TriggerChance = ParseFloat(GetField(cols, idxChance));
+            data.TriggerCoolTime = ParseFloat(GetField(cols, idxCoolTime));
+            data.BuffDuration = ParseFloat(GetField(cols, idxBuffDur));
+            data.StackLimit = ParseInt(GetField(cols, idxStackLimit), 0);
+            data.PassivePrefabPath = GetField(cols, idxPrefab);
 
             return data;
         }
@@ -257,6 +308,32 @@ namespace DungeonRush.Stats.Repository.Csv
             }
 
             return defaultValue;
+        }
+
+        private static bool ParseBool(string value)
+        {
+            return value.Equals("TRUE", StringComparison.OrdinalIgnoreCase);
+        }
+
+        private static string[] ParseStringArray(string value, char separator)
+        {
+            if (string.IsNullOrEmpty(value))
+            {
+                return Array.Empty<string>();
+            }
+
+            string[] parts = value.Split(separator);
+            var result = new List<string>();
+            foreach (string part in parts)
+            {
+                string trimmed = part.Trim();
+                if (!string.IsNullOrEmpty(trimmed))
+                {
+                    result.Add(trimmed);
+                }
+            }
+
+            return result.ToArray();
         }
     }
 }

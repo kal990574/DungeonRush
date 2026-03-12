@@ -5,55 +5,52 @@ namespace DungeonRush.Stats.Data
     [Serializable]
     public class SkillAttackData
     {
-        public float Damage;
-        public float DamageCoeff;
-        public float Cooldown;
-        public float Range;
-        public float ProjectileSpeed;
-        public int ProjectileCount;
-        public int Pierce;
-        public float AreaSize;
-        public float Duration;
-        public float TickInterval;
-        public float TickDamageCoeff;
-        public int BounceCount;
-        public float KnockbackForce;
-        public float CritChanceBonus;
-        public float CritDamageBonus;
+        public float SkillCoef;
+        public float BaseCoolTime;
+        public bool CritEnabled;
+        public bool LifestealEnabled;
+        public float BaseRange;
+        public float BaseRadius;
+        public float BaseKnockback;
+        public int PierceCount;
         public int ChainCount;
-        public float ChainDamageDecay;
-        public float CastDelay;
+        public int BounceCount;
+        public int BaseProj;
+        public float BaseProjSpeed;
+        public string FirePattern;
+        public float BaseDuration;
+        public float TickInterval;
+        public float TickCoef;
+        public int MaxStack;
+        public int StackRule;
 
         public static readonly string[] AllParams =
         {
-            "Damage", "DamageCoeff", "Cooldown", "Range", "ProjectileSpeed",
-            "ProjectileCount", "Pierce", "AreaSize", "Duration", "TickInterval",
-            "TickDamageCoeff", "BounceCount", "KnockbackForce", "CritChanceBonus",
-            "CritDamageBonus", "ChainCount", "ChainDamageDecay", "CastDelay"
+            "SkillCoef", "BaseCoolTime", "BaseRange", "BaseRadius",
+            "BaseKnockback", "PierceCount", "ChainCount", "BounceCount",
+            "BaseProj", "BaseProjSpeed", "BaseDuration", "TickInterval",
+            "TickCoef", "MaxStack", "StackRule"
         };
 
         public float GetParam(string param)
         {
             return param switch
             {
-                "Damage" => Damage,
-                "DamageCoeff" => DamageCoeff,
-                "Cooldown" => Cooldown,
-                "Range" => Range,
-                "ProjectileSpeed" => ProjectileSpeed,
-                "ProjectileCount" => ProjectileCount,
-                "Pierce" => Pierce,
-                "AreaSize" => AreaSize,
-                "Duration" => Duration,
-                "TickInterval" => TickInterval,
-                "TickDamageCoeff" => TickDamageCoeff,
-                "BounceCount" => BounceCount,
-                "KnockbackForce" => KnockbackForce,
-                "CritChanceBonus" => CritChanceBonus,
-                "CritDamageBonus" => CritDamageBonus,
+                "SkillCoef" => SkillCoef,
+                "BaseCoolTime" => BaseCoolTime,
+                "BaseRange" => BaseRange,
+                "BaseRadius" => BaseRadius,
+                "BaseKnockback" => BaseKnockback,
+                "PierceCount" => PierceCount,
                 "ChainCount" => ChainCount,
-                "ChainDamageDecay" => ChainDamageDecay,
-                "CastDelay" => CastDelay,
+                "BounceCount" => BounceCount,
+                "BaseProj" => BaseProj,
+                "BaseProjSpeed" => BaseProjSpeed,
+                "BaseDuration" => BaseDuration,
+                "TickInterval" => TickInterval,
+                "TickCoef" => TickCoef,
+                "MaxStack" => MaxStack,
+                "StackRule" => StackRule,
                 _ => throw new ArgumentException($"Unknown attack param: {param}")
             };
         }
@@ -62,31 +59,30 @@ namespace DungeonRush.Stats.Data
         {
             switch (param)
             {
-                case "Damage": Damage = value; break;
-                case "DamageCoeff": DamageCoeff = value; break;
-                case "Cooldown": Cooldown = value; break;
-                case "Range": Range = value; break;
-                case "ProjectileSpeed": ProjectileSpeed = value; break;
-                case "ProjectileCount": ProjectileCount = (int)value; break;
-                case "Pierce": Pierce = (int)value; break;
-                case "AreaSize": AreaSize = value; break;
-                case "Duration": Duration = value; break;
-                case "TickInterval": TickInterval = value; break;
-                case "TickDamageCoeff": TickDamageCoeff = value; break;
-                case "BounceCount": BounceCount = (int)value; break;
-                case "KnockbackForce": KnockbackForce = value; break;
-                case "CritChanceBonus": CritChanceBonus = value; break;
-                case "CritDamageBonus": CritDamageBonus = value; break;
+                case "SkillCoef": SkillCoef = value; break;
+                case "BaseCoolTime": BaseCoolTime = value; break;
+                case "BaseRange": BaseRange = value; break;
+                case "BaseRadius": BaseRadius = value; break;
+                case "BaseKnockback": BaseKnockback = value; break;
+                case "PierceCount": PierceCount = (int)value; break;
                 case "ChainCount": ChainCount = (int)value; break;
-                case "ChainDamageDecay": ChainDamageDecay = value; break;
-                case "CastDelay": CastDelay = value; break;
+                case "BounceCount": BounceCount = (int)value; break;
+                case "BaseProj": BaseProj = (int)value; break;
+                case "BaseProjSpeed": BaseProjSpeed = value; break;
+                case "BaseDuration": BaseDuration = value; break;
+                case "TickInterval": TickInterval = value; break;
+                case "TickCoef": TickCoef = value; break;
+                case "MaxStack": MaxStack = (int)value; break;
+                case "StackRule": StackRule = (int)value; break;
                 default: throw new ArgumentException($"Unknown attack param: {param}");
             }
         }
 
         public SkillAttackData Clone()
         {
-            return (SkillAttackData)MemberwiseClone();
+            var clone = (SkillAttackData)MemberwiseClone();
+            clone.FirePattern = FirePattern;
+            return clone;
         }
     }
 }

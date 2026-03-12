@@ -11,21 +11,21 @@ namespace DungeonRush.Stats.Config
 
         private static readonly Dictionary<string, (float Min, float Max)> s_statCaps = new()
         {
-            { "MaxHp", (1f, 99999f) },
-            { "HpRegen", (0f, 9999f) },
-            { "Armor", (0f, 9999f) },
-            { "MoveSpeed", (0.1f, 50f) },
             { "ATK", (0f, 99999f) },
-            { "AttackSpeed", (0.01f, 10f) },
-            { "AttackRange", (0.1f, 100f) },
-            { "CritChance", (0f, 1f) },
-            { "CritDamage", (0f, 10f) },
             { "CDR", (0f, 0.8f) },
-            { "AreaSize", (0.1f, 10f) },
-            { "ProjectileCount", (0f, 100f) },
-            { "ProjectileSpeed", (0f, 200f) },
-            { "DetectRange", (0.1f, 200f) },
-            { "Luck", (0f, 10f) }
+            { "CritRate", (0f, 1f) },
+            { "CritDamage", (0f, 10f) },
+            { "HP", (1f, 99999f) },
+            { "HPRegen", (0f, 9999f) },
+            { "Armor", (0f, 9999f) },
+            { "Evasion", (0f, 1f) },
+            { "MoveSpeed", (0.1f, 50f) },
+            { "PickupRange", (0.1f, 100f) },
+            { "ExpGain", (0f, 10f) },
+            { "GoldGain", (0f, 10f) },
+            { "Luck", (0f, 10f) },
+            { "Lifesteal", (0f, 1f) },
+            { "Thorns", (0f, 9999f) }
         };
 
         public static float ClampStat(string key, float value)

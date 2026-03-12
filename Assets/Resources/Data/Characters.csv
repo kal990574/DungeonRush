@@ -1,0 +1,5 @@
+PlayerID,PlayerName,Grade,PlayerModelPrefab,ATK,CDR,CritRate,CritDamage,HP,HPRegen,Armor,Evasion,MoveSpeed,PickupRange,ExpGain,GoldGain,Luck,Lifesteal,Thorns,StartActiveSkillID,StartPassiveSkillID,WeaponTypeTag,CharacterTraitID
+Player_001,마법사,0,Wizard_001,12,0,0.01,2.0,100,0,0,0,1.0,1.0,1.0,1.0,0.05,0,0,SK_A_001,,Staff,TR_001
+Player_002,궁수,0,Archer_001,10,0,0.01,2.0,80,0,0,0.03,1.1,1.0,1.0,1.0,0,0,0,SK_A_002,,Bow,TR_002
+Player_003,암살자,1,Assassin_001,8,0,0.05,2.0,70,0,0,0.06,1.2,1.0,1.0,1.0,0,0,0,SK_A_003,,Dagger,TR_003
+Player_004,검사,1,Warrior_001,15,0,0.01,2.0,150,0,0.1,0,0.9,1.0,1.0,1.0,0,0,0,SK_A_004,,Sword,TR_004
