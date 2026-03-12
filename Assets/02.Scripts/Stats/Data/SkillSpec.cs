@@ -1,8 +1,8 @@
 namespace DungeonRush.Stats.Data
 {
-    public enum SkillCategory
+    public enum SkillType
     {
-        Attack,
+        ActiveAttack,
         Passive
     }
 
@@ -10,7 +10,7 @@ namespace DungeonRush.Stats.Data
     {
         public string Id;
         public string Name;
-        public SkillCategory Category;
+        public SkillType SkillType;
         public string SubType;
         public int MaxLevel;
         public int SkillGroup;
@@ -27,7 +27,7 @@ namespace DungeonRush.Stats.Data
         public SkillAttackData AttackData;
         public SkillPassiveData PassiveData;
 
-        public bool IsAttack => Category == SkillCategory.Attack;
-        public bool IsPassive => Category == SkillCategory.Passive;
+        public bool IsAttack => SkillType == SkillType.ActiveAttack;
+        public bool IsPassive => SkillType == SkillType.Passive;
     }
 }

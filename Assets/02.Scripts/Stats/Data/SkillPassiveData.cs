@@ -5,13 +5,13 @@ namespace DungeonRush.Stats.Data
     [Serializable]
     public class SkillPassiveData
     {
-        public string EffectType;
+        public string PassiveEffectType;
         public string TargetStat;
         public string ModifyType;
         public float ModifyValue;
         public string ApplyScope;
         public string ApplySkillTag;
-        public string ApplySkillId;
+        public string ApplySkillID;
         public string TriggerType;
         public float TriggerChance;
         public float TriggerCoolTime;

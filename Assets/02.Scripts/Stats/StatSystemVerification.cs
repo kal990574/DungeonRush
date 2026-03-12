@@ -74,6 +74,7 @@ namespace DungeonRush.Stats
             Assert("패시브 TargetStat", powerRune.PassiveData.TargetStat == "ATK");
             Assert("패시브 ModifyType", powerRune.PassiveData.ModifyType == "Mult");
             Assert("패시브 ModifyValue", Mathf.Approximately(powerRune.PassiveData.ModifyValue, 0.08f));
+            Assert("패시브 PassiveEffectType", powerRune.PassiveData.PassiveEffectType == "StatModify");
 
             // 5. 레벨업 누적.
             float coefLv3 = gameData.GetSkillParam("SK_A_001", "SkillCoef", 3);

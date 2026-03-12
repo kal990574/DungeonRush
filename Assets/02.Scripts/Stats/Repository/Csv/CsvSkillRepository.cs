@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using DungeonRush.Stats.Data;
+using SkillType = DungeonRush.Stats.Data.SkillType;
 using ValueType = DungeonRush.Stats.Data.ValueType;
 
 namespace DungeonRush.Stats.Repository.Csv
@@ -75,15 +76,15 @@ namespace DungeonRush.Stats.Repository.Csv
                 }
 
                 string typeStr = GetField(cols, idxType);
-                var category = typeStr == "1"
-                    ? SkillCategory.Passive
-                    : SkillCategory.Attack;
+                var skillType = typeStr == "1"
+                    ? Data.SkillType.Passive
+                    : Data.SkillType.ActiveAttack;
 
                 var spec = new SkillSpec
                 {
                     Id = id,
                     Name = GetField(cols, idxName),
-                    Category = category,
+                    SkillType = skillType,
                     SubType = GetField(cols, idxSubType),
                     MaxLevel = ParseInt(GetField(cols, idxMaxLevel), 5),
                     SkillGroup = ParseInt(GetField(cols, idxGroup), 0),
@@ -99,7 +100,7 @@ namespace DungeonRush.Stats.Repository.Csv
                     WeaponTagReq = GetField(cols, idxWeaponReq)
                 };
 
-                if (category == SkillCategory.Attack)
+                if (skillType == Data.SkillType.ActiveAttack)
                 {
                     spec.AttackData = ParseAttackData(headers, cols);
                 }
@@ -127,11 +128,14 @@ namespace DungeonRush.Stats.Repository.Csv
             }
 
             string[] headers = rows[0];
-            int idxSkillId = FindColumn(headers, "SkillId");
-            int idxLevel = FindColumn(headers, "Level");
+            int idxSkillId = FindColumn(headers, "SkillID");
+            int idxLevel = FindColumn(headers, "SkillLevel");
             int idxParam = FindColumn(headers, "ParamName");
             int idxValueType = FindColumn(headers, "ValueType");
-            int idxValue = FindColumn(headers, "Value");
+            int idxValue = FindColumn(headers, "ParamValue");
+            int idxCondType = FindColumn(headers, "ConditionType");
+            int idxCondValue = FindColumn(headers, "ConditionValue");
+            int idxUITextKey = FindColumn(headers, "UITextKey");
 
             for (int r = 1; r < rows.Count; r++)
             {
@@ -145,23 +149,31 @@ namespace DungeonRush.Stats.Repository.Csv
                 int level = ParseInt(GetField(cols, idxLevel), 1);
                 string paramName = GetField(cols, idxParam);
                 string valueTypeStr = GetField(cols, idxValueType);
-                float value = ParseFloat(GetField(cols, idxValue));
+                float paramValue = ParseFloat(GetField(cols, idxValue));
+                string condType = GetField(cols, idxCondType);
+                string condValue = GetField(cols, idxCondValue);
+                string uiTextKey = GetField(cols, idxUITextKey);
 
                 ValueType valueType;
-                if (valueTypeStr.Equals("Percent", StringComparison.OrdinalIgnoreCase))
+                if (valueTypeStr.Equals("Mult", StringComparison.OrdinalIgnoreCase)
+                    || valueTypeStr == "2")
                 {
-                    valueType = ValueType.Percent;
+                    valueType = ValueType.Mult;
                 }
-                else if (valueTypeStr.Equals("Set", StringComparison.OrdinalIgnoreCase))
+                else if (valueTypeStr.Equals("Set", StringComparison.OrdinalIgnoreCase)
+                    || valueTypeStr == "0")
                 {
                     valueType = ValueType.Set;
                 }
                 else
                 {
-                    valueType = ValueType.Flat;
+                    valueType = ValueType.Add;
                 }
 
-                var mod = new ParamModification(paramName, valueType, value);
+                var mod = new ParamModification(
+                    paramName, valueType, paramValue,
+                    string.IsNullOrEmpty(condType) ? null : condType,
+                    string.IsNullOrEmpty(condValue) ? null : condValue);
 
                 if (!_levelUps.TryGetValue(skillId, out var list))
                 {
@@ -169,21 +181,23 @@ namespace DungeonRush.Stats.Repository.Csv
                     _levelUps[skillId] = list;
                 }
 
-                var existing = list.Find(x => x.Level == level);
+                var existing = list.Find(x => x.SkillLevel == level);
                 if (existing != null)
                 {
                     existing.Modifications.Add(mod);
                 }
                 else
                 {
-                    list.Add(new SkillLevelUpData(skillId, level, new List<ParamModification> { mod }));
+                    list.Add(new SkillLevelUpData(
+                        skillId, level, new List<ParamModification> { mod },
+                        string.IsNullOrEmpty(uiTextKey) ? null : uiTextKey));
                 }
             }
 
             // 레벨 순 정렬.
             foreach (var list in _levelUps.Values)
             {
-                list.Sort((a, b) => a.Level.CompareTo(b.Level));
+                list.Sort((a, b) => a.SkillLevel.CompareTo(b.SkillLevel));
             }
         }
 
@@ -250,13 +264,13 @@ namespace DungeonRush.Stats.Repository.Csv
             int idxStackLimit = FindColumn(headers, "StackLimit");
             int idxPrefab = FindColumn(headers, "PassivePrefabPath");
 
-            data.EffectType = GetField(cols, idxEffect);
+            data.PassiveEffectType = GetField(cols, idxEffect);
             data.TargetStat = GetField(cols, idxTarget);
             data.ModifyType = GetField(cols, idxModType);
             data.ModifyValue = ParseFloat(GetField(cols, idxModValue));
             data.ApplyScope = GetField(cols, idxScope);
             data.ApplySkillTag = GetField(cols, idxSkillTag);
-            data.ApplySkillId = GetField(cols, idxSkillId);
+            data.ApplySkillID = GetField(cols, idxSkillId);
             data.TriggerType = GetField(cols, idxTrigger);
             data.TriggerChance = ParseFloat(GetField(cols, idxChance));
             data.TriggerCoolTime = ParseFloat(GetField(cols, idxCoolTime));

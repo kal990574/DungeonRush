@@ -60,9 +60,14 @@ namespace DungeonRush.Stats.Repository.Csv
 
                     if (float.TryParse(value, NumberStyles.Float, CultureInfo.InvariantCulture, out float parsed))
                     {
+                        // Base 접두사 strip. (예: BaseATK → ATK)
+                        string statKey = header.StartsWith("Base", StringComparison.Ordinal)
+                            ? header.Substring(4)
+                            : header;
+
                         try
                         {
-                            stats.SetValue(header, parsed);
+                            stats.SetValue(statKey, parsed);
                         }
                         catch (ArgumentException)
                         {

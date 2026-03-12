@@ -5,8 +5,8 @@ namespace DungeonRush.Stats.Data
     public enum ValueType
     {
         Set,
-        Flat,
-        Percent
+        Add,
+        Mult
     }
 
     [Serializable]
@@ -14,13 +14,22 @@ namespace DungeonRush.Stats.Data
     {
         public string ParamName;
         public ValueType ValueType;
-        public float Value;
+        public float ParamValue;
+        public string ConditionType;
+        public string ConditionValue;
 
-        public ParamModification(string paramName, ValueType valueType, float value)
+        public ParamModification(
+            string paramName,
+            ValueType valueType,
+            float paramValue,
+            string conditionType = null,
+            string conditionValue = null)
         {
             ParamName = paramName;
             ValueType = valueType;
-            Value = value;
+            ParamValue = paramValue;
+            ConditionType = conditionType;
+            ConditionValue = conditionValue;
         }
     }
 }

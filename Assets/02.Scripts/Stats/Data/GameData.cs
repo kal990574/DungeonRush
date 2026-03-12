@@ -78,7 +78,7 @@ namespace DungeonRush.Stats.Data
 
             foreach (var levelUp in levelUps)
             {
-                if (levelUp.Level > level)
+                if (levelUp.SkillLevel > level)
                 {
                     break;
                 }
@@ -111,7 +111,7 @@ namespace DungeonRush.Stats.Data
 
             foreach (var levelUp in levelUps)
             {
-                if (levelUp.Level > level)
+                if (levelUp.SkillLevel > level)
                 {
                     break;
                 }
@@ -144,9 +144,9 @@ namespace DungeonRush.Stats.Data
         {
             return mod.ValueType switch
             {
-                ValueType.Set => mod.Value,
-                ValueType.Flat => current + mod.Value,
-                ValueType.Percent => current * (1f + mod.Value),
+                ValueType.Set => mod.ParamValue,
+                ValueType.Add => current + mod.ParamValue,
+                ValueType.Mult => current * (1f + mod.ParamValue),
                 _ => current
             };
         }
