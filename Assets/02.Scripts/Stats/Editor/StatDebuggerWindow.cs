@@ -40,6 +40,7 @@ namespace DungeonRush.Stats.Editor
         // 스크롤 / Foldout.
         private Vector2 _scrollPos;
         private readonly Dictionary<string, bool> _statFoldouts = new();
+        private readonly Dictionary<string, bool> _sourceBreakdownFoldouts = new();
 
         // 자동 리프레시.
         private double _lastRepaintTime;
@@ -86,6 +87,8 @@ namespace DungeonRush.Stats.Editor
                 DrawModifierControlSection();
                 EditorGUILayout.Space(8);
                 DrawWeaponSlotSection();
+                EditorGUILayout.Space(8);
+                DrawSourceBreakdownSection();
             }
 
             EditorGUILayout.EndScrollView();
@@ -330,26 +333,116 @@ namespace DungeonRush.Stats.Editor
 
                     EditorGUILayout.LabelField($"스킬: {weapon.SkillId}  Lv.{weapon.CurrentLevel}");
 
-                    var attackData = _runState.GetWeaponStats(slot);
-                    if (attackData == null)
+                    var finalData = _runState.GetWeaponStats(slot);
+                    var baseData = _gameData.GetResolvedAttackData(weapon.SkillId, weapon.CurrentLevel);
+                    if (finalData == null || baseData == null)
                     {
                         continue;
                     }
 
                     EditorGUI.indentLevel++;
 
-                    // 15개 파라미터 표시.
+                    // 헤더.
+                    using (new EditorGUILayout.HorizontalScope())
+                    {
+                        EditorGUILayout.LabelField("파라미터", EditorStyles.boldLabel, GUILayout.Width(120));
+                        EditorGUILayout.LabelField("기본값", EditorStyles.boldLabel, GUILayout.Width(80));
+                        EditorGUILayout.LabelField("최종값", EditorStyles.boldLabel, GUILayout.Width(80));
+                    }
+
+                    // 15개 파라미터 비교 표시.
                     foreach (string param in SkillAttackData.AllParams)
                     {
-                        EditorGUILayout.LabelField(param, attackData.GetParam(param).ToString("F2"));
+                        float baseVal = baseData.GetParam(param);
+                        float finalVal = finalData.GetParam(param);
+
+                        using (new EditorGUILayout.HorizontalScope())
+                        {
+                            EditorGUILayout.LabelField(param, GUILayout.Width(120));
+                            EditorGUILayout.LabelField(baseVal.ToString("F2"), GUILayout.Width(80));
+
+                            var finalStyle = new GUIStyle(EditorStyles.label);
+                            if (baseVal != finalVal)
+                            {
+                                bool isBuff = param == "BaseCoolTime"
+                                    ? finalVal < baseVal
+                                    : finalVal > baseVal;
+                                finalStyle.normal.textColor = isBuff
+                                    ? new Color(0.2f, 0.8f, 0.2f)
+                                    : new Color(0.9f, 0.2f, 0.2f);
+                            }
+
+                            EditorGUILayout.LabelField(finalVal.ToString("F2"), finalStyle, GUILayout.Width(80));
+                        }
                     }
 
                     // 추가 필드.
-                    EditorGUILayout.LabelField("CritEnabled", attackData.CritEnabled.ToString());
-                    EditorGUILayout.LabelField("LifestealEnabled", attackData.LifestealEnabled.ToString());
-                    EditorGUILayout.LabelField("FirePattern", attackData.FirePattern ?? "(none)");
+                    EditorGUILayout.LabelField("CritEnabled", finalData.CritEnabled.ToString());
+                    EditorGUILayout.LabelField("LifestealEnabled", finalData.LifestealEnabled.ToString());
+                    EditorGUILayout.LabelField("FirePattern", finalData.FirePattern ?? "(none)");
 
                     EditorGUI.indentLevel--;
+                }
+            }
+        }
+
+        // ─────────────────────────────────────────
+        // 5. 소스별 스탯 기여도 섹션
+        // ─────────────────────────────────────────
+        private void DrawSourceBreakdownSection()
+        {
+            EditorGUILayout.LabelField("소스별 스탯 기여도", EditorStyles.boldLabel);
+
+            using (new EditorGUILayout.VerticalScope("box"))
+            {
+                // 모든 스탯의 Breakdown 엔트리를 소스별로 그룹핑.
+                var sourceEntries = new Dictionary<string, List<(string StatKey, StatBreakdownEntry Entry)>>();
+
+                foreach (string key in BaseStats.AllKeys)
+                {
+                    StatBreakdown breakdown = _runState.GetBreakdown(key);
+                    if (breakdown.Entries == null)
+                    {
+                        continue;
+                    }
+
+                    foreach (var entry in breakdown.Entries)
+                    {
+                        if (!sourceEntries.ContainsKey(entry.SourceKey))
+                        {
+                            sourceEntries[entry.SourceKey] = new List<(string, StatBreakdownEntry)>();
+                        }
+                        sourceEntries[entry.SourceKey].Add((key, entry));
+                    }
+                }
+
+                if (sourceEntries.Count == 0)
+                {
+                    EditorGUILayout.LabelField("활성 모디파이어 없음", EditorStyles.miniLabel);
+                    return;
+                }
+
+                foreach (var kvp in sourceEntries)
+                {
+                    if (!_sourceBreakdownFoldouts.ContainsKey(kvp.Key))
+                    {
+                        _sourceBreakdownFoldouts[kvp.Key] = false;
+                    }
+
+                    _sourceBreakdownFoldouts[kvp.Key] = EditorGUILayout.Foldout(
+                        _sourceBreakdownFoldouts[kvp.Key], $"[{kvp.Key}]", true);
+
+                    if (_sourceBreakdownFoldouts[kvp.Key])
+                    {
+                        EditorGUI.indentLevel += 2;
+                        foreach (var (statKey, entry) in kvp.Value)
+                        {
+                            EditorGUILayout.LabelField(
+                                statKey,
+                                $"{entry.ModifyType} {entry.Value:+0.##;-0.##}");
+                        }
+                        EditorGUI.indentLevel -= 2;
+                    }
                 }
             }
         }
@@ -418,6 +511,7 @@ namespace DungeonRush.Stats.Editor
 
             _addedModifiers.Clear();
             _statFoldouts.Clear();
+            _sourceBreakdownFoldouts.Clear();
             _runState.StartRun(_characterIds[_selectedCharacterIndex]);
         }
 
@@ -426,6 +520,7 @@ namespace DungeonRush.Stats.Editor
             _runState.EndRun();
             _addedModifiers.Clear();
             _statFoldouts.Clear();
+            _sourceBreakdownFoldouts.Clear();
         }
 
         private void AddModifier()
